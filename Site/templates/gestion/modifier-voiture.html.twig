@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier Voiture - AlloParents</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    animation: {
+                        'fade-in': 'fadeIn 0.6s ease-out',
+                        'slide-up': 'slideUp 0.6s ease-out',
+                        'slide-in-left': 'slideInLeft 0.8s ease-out',
+                        'slide-in-right': 'slideInRight 0.8s ease-out',
+                        'scale-in': 'scaleIn 0.3s ease-out',
+                        'pulse-glow': 'pulseGlow 3s ease-in-out infinite',
+                        'bounce-subtle': 'bounceSubtle 2s ease-in-out infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'scale(0.95)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(30px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        slideInLeft: {
+                            '0%': { transform: 'translateX(-30px)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' }
+                        },
+                        slideInRight: {
+                            '0%': { transform: 'translateX(30px)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' }
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { boxShadow: '0 0 20px rgba(255, 255, 255, 0.1)' },
+                            '50%': { boxShadow: '0 0 40px rgba(255, 255, 255, 0.2)' }
+                        },
+                        bounceSubtle: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-5px)' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' }
+                        },
+                        scaleIn: {
+                            '0%': { opacity: '0', transform: 'scale(0.8)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg,
+                #ffffff 0%,
+                #f8fafc 25%,
+                #f1f5f9 50%,
+                #e2e8f0 75%,
+                #cbd5e1 100%
+            );
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(0, 0, 0, 0.04);
+        }
+        
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .glass-input {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .points-glow {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.25), 0 0 10px rgba(0, 0, 0, 0.08);
+        }
+        
+        .floating-orbs::before,
+        .floating-orbs::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        
+        .floating-orbs::before {
+            width: 400px;
+            height: 400px;
+            top: -200px;
+            right: -200px;
+            animation: float 12s ease-in-out infinite;
+        }
+        
+        .floating-orbs::after {
+            width: 300px;
+            height: 300px;
+            bottom: -150px;
+            left: -150px;
+            animation: float 8s ease-in-out infinite reverse;
+        }
+
+        .text-shadow {
+            text-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #3b82f6, #2563eb, #1d4ed8);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(45deg, #2563eb, #1d4ed8, #1e40af);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #6b7280, #4b5563, #374151);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: linear-gradient(45deg, #4b5563, #374151, #1f2937);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+
+<body class="gradient-bg min-h-screen">
+    <!-- Background Effects -->
+    <div class="floating-orbs fixed inset-0 pointer-events-none"></div>
+    
+    {% include 'partials/_top_navigation.html.twig' with {'pageTitle': 'Modifier voiture'} %}
+
+    <!-- Main Content -->
+    <main class="pt-20 px-4 pb-24">
+        <!-- Header Section -->
+        <div class="mb-8 animate-fade-in">
+            <div class="text-center">
+                <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-2 text-shadow">Modifier Voiture ✏️</h1>
+                <p class="text-gray-600 text-sm">Modifiez les informations de votre {{ voiture.marque }} {{ voiture.modele }}</p>
+            </div>
+        </div>
+
+        <!-- Messages -->
+        {% if error %}
+            <div class="mb-6 glass-card rounded-2xl p-4 border-l-4 border-red-500 animate-slide-up">
+                <div class="flex items-center">
+                    <svg class="w-5 h-5 text-red-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <p class="text-red-700">{{ error }}</p>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if success %}
+            <div class="mb-6 glass-card rounded-2xl p-4 border-l-4 border-green-500 animate-slide-up">
+                <div class="flex items-center">
+                    <svg class="w-5 h-5 text-green-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    <p class="text-green-700">{{ success }}</p>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Formulaire de modification -->
+        <div class="animate-slide-up">
+            <form method="POST" class="glass-card rounded-2xl p-6 space-y-6">
+                
+                <!-- Informations du véhicule -->
+                <div class="space-y-4">
+                    <h3 class="text-gray-800 font-semibold text-lg">Informations du véhicule</h3>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">Marque *</label>
+                            <input type="text" name="marque" value="{{ voiture.marque }}" required class="w-full glass-input text-gray-800 rounded-2xl p-3 focus:outline-none focus:ring-2 focus:ring-blue-500/20 placeholder-gray-500" placeholder="Ex: Renault">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">Modèle *</label>
+                            <input type="text" name="modele" value="{{ voiture.modele }}" required class="w-full glass-input text-gray-800 rounded-2xl p-3 focus:outline-none focus:ring-2 focus:ring-blue-500/20 placeholder-gray-500" placeholder="Ex: Clio">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">Couleur *</label>
+                            <input type="text" name="couleur" value="{{ voiture.couleur }}" required class="w-full glass-input text-gray-800 rounded-2xl p-3 focus:outline-none focus:ring-2 focus:ring-blue-500/20 placeholder-gray-500" placeholder="Ex: Blanc">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">Nombre de places *</label>
+                            <input type="number" name="nombrePlaces" value="{{ voiture.nombrePlaces }}" min="1" max="9" {% if voitureUtilisee %}disabled{% else %}required{% endif %} class="w-full glass-input text-gray-800 rounded-2xl p-3 focus:outline-none focus:ring-2 focus:ring-blue-500/20 placeholder-gray-500 {% if voitureUtilisee %}opacity-70 cursor-not-allowed{% endif %}" placeholder="Ex: 5">
+                            <p class="text-gray-500 text-xs mt-1">Ne pas inclure la place du conducteur{% if voitureUtilisee %} • Modifiable uniquement si la voiture n'est pas utilisée dans un trajet actif{% endif %}</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2">Immatriculation *</label>
+                        <input type="text" name="immatriculation" value="{{ voiture.immatriculation }}" required class="w-full glass-input text-gray-800 rounded-2xl p-3 focus:outline-none focus:ring-2 focus:ring-blue-500/20 placeholder-gray-500" placeholder="Ex: AB-123-CD" style="text-transform: uppercase;">
+                    </div>
+                </div>
+
+                <!-- Information -->
+                <div class="glass-input rounded-2xl p-4">
+                    <div class="flex items-start space-x-3">
+                        <svg class="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <div class="text-gray-600 text-sm">
+                            <p class="font-medium text-gray-800 mb-1">Modification de voiture</p>
+                            <p>Les modifications seront prises en compte immédiatement. Si la voiture est utilisée dans des trajets actifs, certaines modifications peuvent affecter ces trajets.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Boutons -->
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <button type="submit" class="flex-1 btn-primary text-white font-medium py-3 px-6 rounded-2xl transition-all duration-300 hover:transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-200 shadow-lg hover:shadow-xl">
+                        <div class="flex items-center justify-center space-x-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                            </svg>
+                            <span>Sauvegarder les modifications</span>
+                        </div>
+                    </button>
+                    <a href="{{ path('gestion_voitures') }}" class="flex-1 sm:flex-none glass-card text-gray-700 font-medium py-3 px-6 rounded-2xl transition-all duration-300 hover:bg-white text-center shadow hover:shadow-md">Annuler</a>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    {% include 'partials/_bottom_navigation.html.twig' %}
+
+    <!-- JavaScript for enhanced interactions -->
+    <script>
+        // Staggered animations on load
+        document.addEventListener('DOMContentLoaded', function() {
+            const elements = document.querySelectorAll('.animate-slide-up, .animate-slide-in-left, .animate-slide-in-right');
+            elements.forEach((el, index) => {
+                setTimeout(() => {
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateX(0) translateY(0)';
+                }, index * 150);
+            });
+        });
+
+        // Parallax effect for floating orbs
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            const orbs = document.querySelector('.floating-orbs');
+            if (orbs) {
+                orbs.style.transform = `translate(${x * 10}px, ${y * 10}px)`;
+            }
+        });
+    </script>
+</body>
+</html>

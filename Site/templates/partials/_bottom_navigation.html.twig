@@ -1,0 +1,115 @@
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 left-0 right-0 glass-card border-t border-gray-200 bg-white/95 backdrop-blur-20">
+    <div class="px-4 py-3">
+        <div class="flex justify-around">
+            <!-- Accueil -->
+            <a href="{{ path('app_home') }}" class="flex flex-col items-center space-y-1 {% if app.request.get('_route') == 'app_home' %}text-blue-600{% else %}text-gray-500{% endif %}">
+                <svg class="w-5 h-5" {% if app.request.get('_route') == 'app_home' %}fill="currentColor"{% else %}fill="none" stroke="currentColor"{% endif %} viewBox="0 0 24 24">
+                    {% if app.request.get('_route') == 'app_home' %}
+                        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                    {% else %}
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    {% endif %}
+                </svg>
+                <span class="text-xs">Accueil</span>
+            </a>
+            
+            <!-- Rechercher -->
+            <a href="{{ path('trajet_rechercher') }}" class="flex flex-col items-center space-y-1 {% if app.request.get('_route') == 'trajet_rechercher' %}text-blue-600{% else %}text-gray-500{% endif %}">
+                <svg class="w-5 h-5" {% if app.request.get('_route') == 'trajet_rechercher' %}fill="currentColor"{% else %}fill="none" stroke="currentColor"{% endif %} viewBox="0 0 24 24">
+                    <path {% if app.request.get('_route') != 'trajet_rechercher' %}stroke-linecap="round" stroke-linejoin="round" stroke-width="2"{% endif %} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+                <span class="text-xs">Rechercher</span>
+            </a>
+            
+            <!-- Créer -->
+            <a href="{{ path('trajet_ajouter') }}" class="flex flex-col items-center space-y-1 {% if app.request.get('_route') == 'trajet_ajouter' %}text-blue-600{% else %}text-gray-500{% endif %}">
+                <svg class="w-5 h-5" {% if app.request.get('_route') == 'trajet_ajouter' %}fill="currentColor"{% else %}fill="none" stroke="currentColor"{% endif %} viewBox="0 0 24 24">
+                    <path {% if app.request.get('_route') != 'trajet_ajouter' %}stroke-linecap="round" stroke-linejoin="round" stroke-width="2"{% endif %} d="M12 4v16m8-8H4"/>
+                </svg>
+                <span class="text-xs">Créer</span>
+            </a>
+            
+            <!-- Messages -->
+            <a href="{{ path('chat_messages') }}" class="flex flex-col items-center space-y-1 {% if app.request.get('_route') == 'chat_messages' %}text-blue-600{% else %}text-gray-500{% endif %} relative">
+                <svg class="w-5 h-5" {% if app.request.get('_route') == 'chat_messages' %}fill="currentColor"{% else %}fill="none" stroke="currentColor"{% endif %} viewBox="0 0 24 24">
+                    <path {% if app.request.get('_route') != 'chat_messages' %}stroke-linecap="round" stroke-linejoin="round" stroke-width="2"{% endif %} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                </svg>
+                <span class="text-xs">Messages</span>
+                {% if messagesNonLus is defined and messagesNonLus > 0 %}
+                    <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">{{ messagesNonLus }}</span>
+                {% endif %}
+            </a>
+            
+            <!-- Menu Plus -->
+            <button onclick="toggleMoreMenu()" class="flex flex-col items-center space-y-1 text-gray-500 relative" id="moreButton">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
+                </svg>
+                <span class="text-xs">Plus</span>
+            </button>
+        </div>
+    </div>
+</nav>
+
+<!-- Menu Plus flottant -->
+<div id="moreMenu" class="fixed bottom-20 right-4 glass-card rounded-2xl border border-gray-200 shadow-xl transform scale-0 origin-bottom-right transition-all duration-300 z-40 bg-white/95 backdrop-blur-20" style="min-width: 200px;">
+    <div class="p-2">
+        <a href="{{ path('trajet_mes_trajets') }}" class="flex items-center space-x-3 p-3 rounded-xl hover:bg-gray-100 transition-colors text-gray-600 hover:text-gray-800">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H9m0 0H5m0 0h2M7 7h10M7 11h4m6 0h4M7 15h10"/>
+            </svg>
+            <span class="text-sm font-medium">Mes trajets</span>
+        </a>
+        <a href="{{ path('mes_reservations') }}" class="flex items-center space-x-3 p-3 rounded-xl hover:bg-gray-100 transition-colors text-gray-600 hover:text-gray-800">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+            </svg>
+            <span class="text-sm font-medium">Mes réservations</span>
+        </a>
+        <a href="{{ path('gestion_enfants') }}" class="flex items-center space-x-3 p-3 rounded-xl hover:bg-gray-100 transition-colors text-gray-600 hover:text-gray-800">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"/>
+            </svg>
+            <span class="text-sm font-medium">Gestion</span>
+        </a>
+    </div>
+</div>
+
+<script>
+// Variables globales pour le menu Plus
+let moreMenuOpen = false;
+
+// Gestion du menu Plus
+window.toggleMoreMenu = function() {
+    const menu = document.getElementById('moreMenu');
+    const button = document.getElementById('moreButton');
+    
+    if (moreMenuOpen) {
+        menu.style.transform = 'scale(0)';
+        button.classList.remove('text-blue-600');
+        button.classList.add('text-gray-500');
+        moreMenuOpen = false;
+    } else {
+        menu.style.transform = 'scale(1)';
+        button.classList.remove('text-gray-500');
+        button.classList.add('text-blue-600');
+        moreMenuOpen = true;
+    }
+};
+
+// Fermer le menu en cliquant en dehors
+document.addEventListener('click', function(e) {
+    const menu = document.getElementById('moreMenu');
+    const button = document.getElementById('moreButton');
+    
+    if (moreMenuOpen && !menu.contains(e.target) && !button.contains(e.target)) {
+        menu.style.transform = 'scale(0)';
+        button.classList.remove('text-blue-600');
+        button.classList.add('text-gray-500');
+        moreMenuOpen = false;
+    }
+});
+</script>
+
+

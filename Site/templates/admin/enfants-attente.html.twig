@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enfants en attente - Administration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    animation: {
+                        'fade-in': 'fadeIn 0.6s ease-out',
+                        'slide-up': 'slideUp 0.6s ease-out',
+                        'slide-in-left': 'slideInLeft 0.8s ease-out',
+                        'slide-in-right': 'slideInRight 0.8s ease-out',
+                        'scale-in': 'scaleIn 0.3s ease-out',
+                        'bounce-subtle': 'bounceSubtle 2s ease-in-out infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeIn: { '0%': { opacity: '0', transform: 'scale(0.95)' }, '100%': { opacity: '1', transform: 'scale(1)' } },
+                        slideUp: { '0%': { transform: 'translateY(30px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } },
+                        slideInLeft: { '0%': { transform: 'translateX(-30px)', opacity: '0' }, '100%': { transform: 'translateX(0)', opacity: '1' } },
+                        slideInRight: { '0%': { transform: 'translateX(30px)', opacity: '0' }, '100%': { transform: 'translateX(0)', opacity: '1' } },
+                        scaleIn: { '0%': { opacity: '0', transform: 'scale(0.9)' }, '100%': { opacity: '1', transform: 'scale(1)' } },
+                        bounceSubtle: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-5px)' } },
+                        float: { '0%, 100%': { transform: 'translateY(0px)' }, '50%': { transform: 'translateY(-10px)' } },
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg,
+                #ffffff 0%,
+                #f8fafc 25%,
+                #f1f5f9 50%,
+                #e2e8f0 75%,
+                #cbd5e1 100%
+            );
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(0, 0, 0, 0.04);
+        }
+        .btn-primary {
+            background: linear-gradient(45deg, #3b82f6, #2563eb, #1d4ed8);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(45deg, #2563eb, #1d4ed8, #1e40af);
+            transform: translateY(-1px);
+        }
+        .btn-danger {
+            background: linear-gradient(45deg, #ef4444, #dc2626);
+            transition: all 0.3s ease;
+        }
+        .btn-danger:hover {
+            background: linear-gradient(45deg, #dc2626, #b91c1c);
+            transform: translateY(-1px);
+        }
+        .floating-orbs::before,
+        .floating-orbs::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .floating-orbs::before { width: 400px; height: 400px; top: -200px; right: -200px; animation: float 12s ease-in-out infinite; }
+        .floating-orbs::after { width: 300px; height: 300px; bottom: -150px; left: -150px; animation: float 8s ease-in-out infinite reverse; }
+    </style>
+</head>
+
+<body class="gradient-bg min-h-screen">
+    <!-- Background Effects -->
+    <div class="floating-orbs fixed inset-0 pointer-events-none"></div>
+
+    {% include 'partials/_top_navigation.html.twig' with {'pageTitle': 'Enfants en attente'} %}
+
+    <main class="pt-24 px-4 pb-24">
+        <!-- Heading -->
+        <div class="mb-6 animate-fade-in text-center">
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">Enfants en attente de validation</h1>
+            <p class="text-gray-600 text-sm">Validez ou rejetez les demandes avec les pièces jointes</p>
+        </div>
+
+        <!-- Flash messages -->
+        {% for message in app.flashes('success') %}
+            <div class="mb-4 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 backdrop-blur-sm animate-scale-in glass-card">
+                <div class="flex items-start">
+                    <svg class="w-5 h-5 text-emerald-600 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <p class="text-emerald-700 text-sm">{{ message }}</p>
+                </div>
+            </div>
+        {% endfor %}
+
+        {% if enfants is empty %}
+            <div class="glass-card rounded-2xl p-6 text-center animate-fade-in">
+                <div class="w-16 h-16 bg-blue-500/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.239 0-4.3-.613-6.1-1.686"/>
+                    </svg>
+                </div>
+                <p class="text-gray-600">Aucun enfant en attente de validation.</p>
+            </div>
+        {% else %}
+            <div class="space-y-4">
+                {% for enfant in enfants %}
+                    <div class="glass-card rounded-2xl p-6 animate-slide-up">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-3 mb-2">
+                                    <div class="w-10 h-10 bg-blue-500/20 rounded-full flex items-center justify-center">
+                                        <span class="text-blue-600 font-bold text-sm">{{ enfant.prenom|slice(0,1) }}</span>
+                                    </div>
+                                    <h3 class="text-gray-800 font-semibold text-lg">{{ enfant.prenom }} {{ enfant.nom }}</h3>
+                                </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-600">
+                                    <div>
+                                        <span class="text-gray-500">Date de naissance:</span>
+                                        <span class="ml-1 text-gray-800 font-medium">{{ enfant.dateNaissance|date('d/m/Y') }} ({{ enfant.age }} ans)</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-500">Sexe:</span>
+                                        <span class="ml-1 text-gray-800 font-medium">{{ enfant.sexe == 'M' ? 'Masculin' : 'Féminin' }}</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-500">École:</span>
+                                        <span class="ml-1 text-gray-800 font-medium">{{ enfant.ecole }}</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-500">Créé le:</span>
+                                        <span class="ml-1 text-gray-800 font-medium">{{ enfant.dateCreation|date('d/m/Y H:i') }}</span>
+                                    </div>
+                                    {% if enfant.certificatScolarite %}
+                                        <div class="sm:col-span-2 mt-1">
+                                            <span class="text-gray-500">Certificat:</span>
+                                            <a href="{{ asset('uploads/certificats/' ~ enfant.certificatScolarite) }}" target="_blank" class="ml-1 text-blue-600 hover:underline">Voir le certificat</a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0 ml-4">
+                                <form method="post" action="{{ path('admin_valider_enfant', {'id': enfant.id}) }}" class="inline">
+                                    <button type="submit" class="btn-primary text-white px-4 py-2 rounded-xl transition-all shadow hover:shadow-md">
+                                        Valider
+                                    </button>
+                                </form>
+                                <form method="post" action="{{ path('admin_rejeter_enfant', {'id': enfant.id}) }}" class="inline">
+                                    <button type="submit" class="btn-danger text-white px-4 py-2 rounded-xl transition-all shadow hover:shadow-md" onclick="return confirm('Êtes-vous sûr de vouloir rejeter cet enfant ?')">
+                                        Rejeter
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="mt-6 text-center">
+            <a href="{{ path('admin_dashboard') }}" class="inline-flex items-center py-3 px-6 glass-card rounded-2xl text-gray-700 hover:bg-white transition-all">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+                Retour au dashboard
+            </a>
+        </div>
+    </main>
+
+    {% include 'partials/_bottom_navigation.html.twig' %}
+</body>
+</html>

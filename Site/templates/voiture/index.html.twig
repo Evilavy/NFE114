@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Voitures{% endblock %}
+
+{% block body %}
+<div style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <h1 style="color: #333; margin: 0;">Mes Voitures</h1>
+        <a href="{{ path('voiture_ajouter') }}" style="background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Ajouter une voiture</a>
+    </div>
+
+    {% for message in app.flashes('success') %}
+        <div style="background-color: #d4edda; color: #155724; padding: 15px; margin-bottom: 20px; border-radius: 5px; border: 1px solid #c3e6cb;">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {% for message in app.flashes('error') %}
+        <div style="background-color: #f8d7da; color: #721c24; padding: 15px; margin-bottom: 20px; border-radius: 5px; border: 1px solid #f5c6cb;">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {% if voitures is empty %}
+        <div style="text-align: center; padding: 40px; background-color: #f8f9fa; border-radius: 10px;">
+            <h3 style="color: #6c757d; margin-bottom: 20px;">Aucune voiture trouvée</h3>
+            <p style="color: #6c757d; margin-bottom: 20px;">Vous n'avez pas encore ajouté de voiture.</p>
+            <a href="{{ path('voiture_ajouter') }}" style="background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Ajouter votre première voiture</a>
+        </div>
+    {% else %}
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px;">
+            {% for voiture in voitures %}
+                <div style="background-color: white; border: 1px solid #dee2e6; border-radius: 10px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+                        <h3 style="margin: 0; color: #333;">{{ voiture.marque }} {{ voiture.modele }}</h3>
+                        <div style="display: flex; gap: 10px;">
+                            <a href="{{ path('voiture_modifier', {'id': voiture.id}) }}" style="background-color: #ffc107; color: #212529; padding: 5px 10px; text-decoration: none; border-radius: 3px; font-size: 12px;">Modifier</a>
+                            <form method="post" action="{{ path('voiture_supprimer', {'id': voiture.id}) }}" style="display: inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette voiture ?')">
+                                <button type="submit" style="background-color: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 3px; font-size: 12px; cursor: pointer;">Supprimer</button>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 10px;">
+                        <strong style="color: #495057;">Couleur :</strong> 
+                        <span style="color: #6c757d;">{{ voiture.couleur }}</span>
+                    </div>
+                    
+                    <div style="margin-bottom: 10px;">
+                        <strong style="color: #495057;">Immatriculation :</strong> 
+                        <span style="color: #6c757d; font-family: monospace;">{{ voiture.immatriculation }}</span>
+                    </div>
+                    
+                    <div style="margin-bottom: 10px;">
+                        <strong style="color: #495057;">Nombre de places :</strong> 
+                        <span style="color: #6c757d;">{{ voiture.nombrePlaces }}</span>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

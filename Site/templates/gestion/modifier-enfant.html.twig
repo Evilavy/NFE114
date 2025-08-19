@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier Enfant - AlloParents</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    animation: {
+                        'fade-in': 'fadeIn 0.6s ease-out',
+                        'slide-up': 'slideUp 0.6s ease-out',
+                        'slide-in-left': 'slideInLeft 0.8s ease-out',
+                        'slide-in-right': 'slideInRight 0.8s ease-out',
+                        'scale-in': 'scaleIn 0.3s ease-out',
+                        'pulse-glow': 'pulseGlow 3s ease-in-out infinite',
+                        'bounce-subtle': 'bounceSubtle 2s ease-in-out infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'scale(0.95)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(30px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        slideInLeft: {
+                            '0%': { transform: 'translateX(-30px)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' }
+                        },
+                        slideInRight: {
+                            '0%': { transform: 'translateX(30px)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' }
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { boxShadow: '0 0 20px rgba(255, 255, 255, 0.1)' },
+                            '50%': { boxShadow: '0 0 40px rgba(255, 255, 255, 0.2)' }
+                        },
+                        bounceSubtle: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-5px)' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' }
+                        },
+                        scaleIn: {
+                            '0%': { opacity: '0', transform: 'scale(0.8)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg,
+                #ffffff 0%,
+                #f8fafc 25%,
+                #f1f5f9 50%,
+                #e2e8f0 75%,
+                #cbd5e1 100%
+            );
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(0, 0, 0, 0.04);
+        }
+        
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 1);
+            border-color: rgba(0, 0, 0, 0.12);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12), 0 8px 24px rgba(0, 0, 0, 0.06);
+        }
+        
+        .glass-input {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .glass-input:focus {
+            background: rgba(255, 255, 255, 1);
+            border-color: rgba(59, 130, 246, 0.4);
+        }
+        
+        .points-glow {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.25), 0 0 10px rgba(0, 0, 0, 0.08);
+        }
+        
+        .floating-orbs::before,
+        .floating-orbs::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        
+        .floating-orbs::before {
+            width: 400px;
+            height: 400px;
+            top: -200px;
+            right: -200px;
+            animation: float 12s ease-in-out infinite;
+        }
+        
+        .floating-orbs::after {
+            width: 300px;
+            height: 300px;
+            bottom: -150px;
+            left: -150px;
+            animation: float 8s ease-in-out infinite reverse;
+        }
+
+        .text-shadow {
+            text-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #3b82f6, #2563eb, #1d4ed8);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(45deg, #2563eb, #1d4ed8, #1e40af);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #f3f4f6, #e5e7eb);
+            color: #374151;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: linear-gradient(45deg, #e5e7eb, #d1d5db);
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+
+<body class="gradient-bg min-h-screen">
+    <!-- Background Effects -->
+    <div class="floating-orbs fixed inset-0 pointer-events-none"></div>
+    
+    <!-- Top Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 glass-card border-b border-black/10">
+        <div class="px-4 py-3">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 rounded-full points-glow flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </div>
+                    <span class="text-gray-800 font-bold text-lg">AlloParents</span>
+                </div>
+
+                <!-- Back button -->
+                <div class="flex items-center space-x-3">
+                    <a href="{{ path('gestion_enfants') }}" class="p-2 rounded-full glass-card hover:bg-black/5 transition-all duration-300" title="Retour">
+                        <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-20 px-4 pb-24">
+        <!-- Header Section -->
+        <div class="mb-8 animate-fade-in">
+            <div class="text-center">
+                <h1 class="text-2xl sm:text-3xl font-bold mb-2 text-shadow">
+                    Modifier Enfant ✏️
+                </h1>
+                <p class="text-gray-300 text-sm">
+                    Modifiez les informations de {{ enfant.prenom }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Messages -->
+        {% if error %}
+            <div class="mb-6 glass-card rounded-2xl p-4 border-l-4 border-red-500 animate-slide-up">
+                <div class="flex items-center">
+                    <svg class="w-5 h-5 text-red-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <p class="text-red-300">{{ error }}</p>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if success %}
+            <div class="mb-6 glass-card rounded-2xl p-4 border-l-4 border-green-500 animate-slide-up">
+                <div class="flex items-center">
+                    <svg class="w-5 h-5 text-green-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    <p class="text-green-300">{{ success }}</p>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Formulaire de modification -->
+        <div class="animate-slide-up">
+            <form method="POST" class="glass-card rounded-2xl p-6 space-y-6">
+                
+                <!-- Informations personnelles -->
+                <div class="space-y-4">
+                    <h3 class="text-gray-800 font-semibold text-lg">Informations personnelles</h3>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">Prénom *</label>
+                            <input type="text" name="prenom" value="{{ enfant.prenom }}" required class="w-full glass-input text-gray-800 rounded-2xl p-3 focus:outline-none focus:ring-2 focus:ring-blue-500/20 placeholder-gray-500" placeholder="Prénom de l'enfant">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">Nom *</label>
+                            <input type="text" name="nom" value="{{ enfant.nom }}" required class="w-full glass-input text-gray-800 rounded-2xl p-3 focus:outline-none focus:ring-2 focus:ring-blue-500/20 placeholder-gray-500" placeholder="Nom de l'enfant">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">Date de naissance *</label>
+                            <input type="date" name="dateNaissance" value="{{ enfant.dateNaissance|date('Y-m-d') }}" required class="w-full glass-input text-gray-800 rounded-2xl p-3 focus:outline-none focus:ring-2 focus:ring-blue-500/20">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">Sexe *</label>
+                            <select name="sexe" required class="w-full glass-input text-gray-800 rounded-2xl p-3 focus:outline-none focus:ring-2 focus:ring-blue-500/20">
+                                <option value="">Choisir...</option>
+                                <option value="M" {{ enfant.sexe == 'M' ? 'selected' : '' }}>Garçon</option>
+                                <option value="F" {{ enfant.sexe == 'F' ? 'selected' : '' }}>Fille</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2">École *</label>
+                        <select name="ecoleId" required class="w-full glass-input text-gray-800 rounded-2xl p-3 focus:outline-none focus:ring-2 focus:ring-blue-500/20">
+                            <option value="">Choisir une école...</option>
+                            {% for ecole in ecoles %}
+                                <option value="{{ ecole.id }}" {{ enfant.ecole is defined and enfant.ecole == ecole.nom ? 'selected' : '' }}>{{ ecole.nom }} - {{ ecole.ville }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Boutons -->
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <button type="submit" class="flex-1 btn-primary text-white font-medium py-3 px-6 rounded-2xl transition-all duration-300 hover:transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-white/20 shadow-lg hover:shadow-xl">
+                        <div class="flex items-center justify-center space-x-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                            </svg>
+                            <span>Sauvegarder les modifications</span>
+                        </div>
+                    </button>
+                    <a 
+                        href="{{ path('gestion_enfants') }}" 
+                        class="flex-1 sm:flex-none btn-secondary font-medium py-3 px-6 rounded-2xl transition-all duration-300 hover:transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-white/20 text-center shadow-lg hover:shadow-xl"
+                    >
+                        Annuler
+                    </a>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    {% include 'partials/_bottom_navigation.html.twig' %}
+
+    <!-- JavaScript for enhanced interactions -->
+    <script>
+        // Staggered animations on load
+        document.addEventListener('DOMContentLoaded', function() {
+            const elements = document.querySelectorAll('.animate-slide-up, .animate-slide-in-left, .animate-slide-in-right');
+            elements.forEach((el, index) => {
+                setTimeout(() => {
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateX(0) translateY(0)';
+                }, index * 150);
+            });
+        });
+
+        // Parallax effect for floating orbs
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            const orbs = document.querySelector('.floating-orbs');
+            if (orbs) {
+                orbs.style.transform = `translate(${x * 10}px, ${y * 10}px)`;
+            }
+        });
+    </script>
+</body>
+</html>

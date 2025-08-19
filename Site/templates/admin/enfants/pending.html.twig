@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enfants en attente - Administration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    animation: {
+                        'fade-in': 'fadeIn 0.6s ease-out',
+                        'slide-up': 'slideUp 0.6s ease-out',
+                        'slide-in-left': 'slideInLeft 0.8s ease-out',
+                        'slide-in-right': 'slideInRight 0.8s ease-out',
+                        'scale-in': 'scaleIn 0.3s ease-out',
+                        'pulse-glow': 'pulseGlow 3s ease-in-out infinite',
+                        'bounce-subtle': 'bounceSubtle 2s ease-in-out infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'scale(0.95)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(30px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        slideInLeft: {
+                            '0%': { transform: 'translateX(-30px)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' }
+                        },
+                        slideInRight: {
+                            '0%': { transform: 'translateX(30px)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' }
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { boxShadow: '0 0 20px rgba(255, 255, 255, 0.1)' },
+                            '50%': { boxShadow: '0 0 40px rgba(255, 255, 255, 0.2)' }
+                        },
+                        bounceSubtle: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-5px)' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' }
+                        },
+                        scaleIn: {
+                            '0%': { opacity: '0', transform: 'scale(0.8)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, 
+                #ffffff 0%, 
+                #f8fafc 25%, 
+                #f1f5f9 50%, 
+                #e2e8f0 75%, 
+                #cbd5e1 100%
+            );
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(0, 0, 0, 0.04);
+        }
+        
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 1);
+            border-color: rgba(0, 0, 0, 0.12);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12), 0 8px 24px rgba(0, 0, 0, 0.06);
+            transform: translateY(-2px);
+        }
+
+        .bottom-nav {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.08), 0 -4px 16px rgba(0, 0, 0, 0.04);
+        }
+        
+        .floating-orbs::before,
+        .floating-orbs::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        
+        .floating-orbs::before {
+            width: 400px;
+            height: 400px;
+            top: -200px;
+            right: -200px;
+            animation: float 12s ease-in-out infinite;
+        }
+        
+        .floating-orbs::after {
+            width: 300px;
+            height: 300px;
+            bottom: -150px;
+            left: -150px;
+            animation: float 8s ease-in-out infinite reverse;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #3b82f6, #2563eb, #1d4ed8);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(45deg, #2563eb, #1d4ed8, #1e40af);
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #10b981, #059669, #047857);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-success:hover {
+            background: linear-gradient(45deg, #059669, #047857, #065f46);
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: linear-gradient(45deg, #ef4444, #dc2626, #b91c1c);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-danger:hover {
+            background: linear-gradient(45deg, #dc2626, #b91c1c, #991b1b);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #e5e7eb, #d1d5db, #9ca3af);
+            transition: all 0.3s ease;
+            color: #374151;
+        }
+        
+        .btn-secondary:hover {
+            background: linear-gradient(45deg, #d1d5db, #9ca3af, #6b7280);
+            transform: translateY(-2px);
+        }
+
+        .text-shadow {
+            text-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .pending-badge {
+            background: linear-gradient(45deg, #3b82f6, #2563eb);
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+
+        .gender-badge-male {
+            background: linear-gradient(45deg, #3b82f6, #1d4ed8);
+        }
+
+        .gender-badge-female {
+            background: linear-gradient(45deg, #3b82f6, #1d4ed8);
+        }
+
+        .age-badge {
+            background: linear-gradient(45deg, #3b82f6, #1d4ed8);
+        }
+
+        .certificate-available {
+            background: linear-gradient(45deg, #10b981, #059669);
+        }
+
+        .certificate-missing {
+            background: linear-gradient(45deg, #ef4444, #dc2626);
+        }
+
+        .child-card {
+            transition: all 0.3s ease;
+        }
+
+        .child-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+
+<body class="gradient-bg min-h-screen">
+    <!-- Background Effects -->
+    <div class="floating-orbs fixed inset-0 pointer-events-none"></div>
+    
+    {% include 'partials/_top_navigation.html.twig' with {'pageTitle': 'Administration'} %}
+
+    <!-- Main Content -->
+    <main class="pt-24 px-4 pb-24">
+        <!-- Header Section -->
+        <div class="mb-8 animate-fade-in">
+            <div class="text-center">
+                <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-2 text-shadow">
+                    Enfants en attente de validation 👶
+                </h1>
+                <p class="text-gray-600 text-sm">
+                    Vérifiez et validez les certificats de scolarité
+                </p>
+            </div>
+        </div>
+
+        <!-- Stats Card -->
+        <div class="mb-6 animate-slide-up">
+            <div class="glass-card rounded-2xl p-4 text-center">
+                <div class="text-3xl mb-2">📊</div>
+                <div class="text-gray-800 font-bold text-xl mb-1">{{ enfants|length }}</div>
+                <div class="text-gray-600 text-sm">enfant{{ enfants|length > 1 ? 's' : '' }} en attente</div>
+                {% if enfants|length > 0 %}
+                    <div class="mt-2">
+                        <span class="pending-badge text-white text-xs font-bold px-3 py-1 rounded-full">
+                            Action requise
+                        </span>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Flash Messages -->
+        {% for message in app.flashes('success') %}
+            <div class="glass-card rounded-2xl p-4 mb-6 border-l-4 border-green-500 animate-slide-in-left">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center">
+                        <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <div class="text-green-700 text-sm">{{ message }}</div>
+                </div>
+            </div>
+        {% endfor %}
+
+        {% for message in app.flashes('error') %}
+            <div class="glass-card rounded-2xl p-4 mb-6 border-l-4 border-red-500 animate-slide-in-left">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-red-500/20 rounded-full flex items-center justify-center">
+                        <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </div>
+                    <div class="text-red-700 text-sm">{{ message }}</div>
+                </div>
+            </div>
+        {% endfor %}
+
+
+
+        <!-- Enfants List -->
+        <div class="space-y-6 animate-slide-up">
+            {% if enfants is empty %}
+                <div class="glass-card rounded-3xl p-8 text-center">
+                    <div class="text-6xl mb-4">🎉</div>
+                    <div class="text-gray-800 font-bold text-xl mb-2">Aucun enfant en attente</div>
+                    <div class="text-gray-600 text-sm mb-6">Tous les enfants ont été traités ! Excellente gestion.</div>
+                    <a href="{{ path('admin_dashboard') }}" 
+                       class="btn-secondary text-center font-medium py-3 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-200 shadow-lg hover:shadow-xl inline-flex items-center space-x-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        <span>Retour au dashboard</span>
+                    </a>
+                </div>
+            {% else %}
+                {% for enfant in enfants %}
+                    <div class="glass-card rounded-3xl p-6 child-card animate-slide-in-left" style="animation-delay: {{ loop.index0 * 0.1 }}s">
+                        <!-- Header -->
+                        <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 mb-6">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
+                                    <span class="text-white font-bold text-lg">{{ enfant.prenom|slice(0, 1) }}{{ enfant.nom|slice(0, 1) }}</span>
+                                </div>
+                                <div>
+                                    <h3 class="text-2xl font-bold text-gray-800">{{ enfant.prenom }} {{ enfant.nom }}</h3>
+                                    <div class="flex items-center space-x-2 mt-2">
+                                        <span class="pending-badge text-white text-xs font-bold px-2 py-1 rounded-full">
+                                            En attente
+                                        </span>
+                                        <span class="age-badge text-white text-xs font-bold px-2 py-1 rounded-full">
+                                            {{ enfant.age }} ans
+                                        </span>
+                                        <span class="gender-badge-male text-white text-xs font-bold px-2 py-1 rounded-full">
+                                            {{ enfant.sexe == 'M' ? '👦 Garçon' : '👧 Fille' }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Action Buttons -->
+                            <div class="flex flex-col sm:flex-row gap-3">
+                                <a href="{{ path('admin_enfant_view', {'id': enfant.id}) }}" 
+                                   class="btn-primary text-white font-medium py-3 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-200 shadow-lg hover:shadow-xl text-center">
+                                    <div class="flex items-center justify-center space-x-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                        </svg>
+                                        <span>Voir détails</span>
+                                    </div>
+                                </a>
+                                
+                                <form method="POST" action="{{ path('admin_enfant_validate', {'id': enfant.id}) }}" class="inline">
+                                    <button type="submit" 
+                                            class="btn-success text-white font-medium py-3 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-200 shadow-lg hover:shadow-xl text-center w-full sm:w-auto"
+                                            onclick="return confirm('Êtes-vous sûr de vouloir valider cet enfant ?')">
+                                        <div class="flex items-center justify-center space-x-2">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                            </svg>
+                                            <span>Valider</span>
+                                        </div>
+                                    </button>
+                                </form>
+                                
+                                <form method="POST" action="{{ path('admin_enfant_reject', {'id': enfant.id}) }}" class="inline">
+                                    <button type="submit" 
+                                            class="btn-danger text-white font-medium py-3 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-200 shadow-lg hover:shadow-xl text-center w-full sm:w-auto"
+                                            onclick="return confirm('Êtes-vous sûr de vouloir rejeter cet enfant ?')">
+                                        <div class="flex items-center justify-center space-x-2">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                            </svg>
+                                            <span>Rejeter</span>
+                                        </div>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        
+                        <!-- Information Grid -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                            <div class="glass-card rounded-2xl p-4">
+                                <div class="flex items-center space-x-3 mb-2">
+                                    <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
+                                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                        </svg>
+                                    </div>
+                                    <h4 class="text-gray-800 font-semibold text-sm">Naissance</h4>
+                                </div>
+                                <p class="text-gray-600 text-sm">{{ enfant.dateNaissance|date('d/m/Y') }}</p>
+                            </div>
+                            
+                            <div class="glass-card rounded-2xl p-4">
+                                <div class="flex items-center space-x-3 mb-2">
+                                    <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
+                                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H9m0 0H5m0 0h2M7 7h10M7 11h4m6 0h4M7 15h10"/>
+                                        </svg>
+                                    </div>
+                                    <h4 class="text-gray-800 font-semibold text-sm">École</h4>
+                                </div>
+                                <p class="text-gray-600 text-sm">ID: {{ enfant.ecoleId }}</p>
+                            </div>
+                            
+                            <div class="glass-card rounded-2xl p-4">
+                                <div class="flex items-center space-x-3 mb-2">
+                                    <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
+                                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                        </svg>
+                                    </div>
+                                    <h4 class="text-gray-800 font-semibold text-sm">Parent</h4>
+                                </div>
+                                <p class="text-gray-600 text-sm">ID: {{ enfant.userId }}</p>
+                            </div>
+                            
+                            <div class="glass-card rounded-2xl p-4">
+                                <div class="flex items-center space-x-3 mb-2">
+                                    <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
+                                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                        </svg>
+                                    </div>
+                                    <h4 class="text-gray-800 font-semibold text-sm">Création</h4>
+                                </div>
+                                <p class="text-gray-600 text-sm">{{ enfant.dateCreation|date('d/m/Y') }}</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Certificate Section -->
+                        <div class="glass-card rounded-2xl p-6">
+                            <div class="flex items-center space-x-3 mb-4">
+                                <div class="w-8 h-8 {% if enfant.certificatScolarite %}certificate-available{% else %}certificate-missing{% endif %} rounded-full flex items-center justify-center">
+                                    {% if enfant.certificatScolarite %}
+                                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                        </svg>
+                                    {% else %}
+                                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                        </svg>
+                                    {% endif %}
+                                </div>
+                                <h4 class="text-gray-800 font-semibold">Certificat de scolarité</h4>
+                                {% if enfant.certificatScolarite %}
+                                    <span class="certificate-available text-white text-xs font-bold px-2 py-1 rounded-full">
+                                        Disponible
+                                    </span>
+                                {% else %}
+                                    <span class="certificate-missing text-white text-xs font-bold px-2 py-1 rounded-full">
+                                        Manquant
+                                    </span>
+                                {% endif %}
+                            </div>
+                            
+                            {% if enfant.certificatScolarite %}
+                                <a href="http://localhost:8080/demo-api/api/enfants/{{ enfant.id }}/certificat" target="_blank" 
+                                   class="btn-primary text-white font-medium py-3 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-200 shadow-lg hover:shadow-xl inline-flex items-center space-x-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                    </svg>
+                                    <span>Voir / Télécharger le certificat</span>
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                                    </svg>
+                                </a>
+                            {% else %}
+                                <div class="text-center py-8">
+                                    <svg class="w-16 h-16 text-red-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                    </svg>
+                                    <p class="text-red-600 font-medium">Aucun certificat disponible</p>
+                                    <p class="text-gray-500 text-sm mt-1">Le parent n'a pas encore téléchargé le certificat</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        
+        <!-- Information Section -->
+       
+        <!-- Back Button -->
+        <div class="mt-8 animate-slide-up">
+            <a href="{{ path('admin_dashboard') }}" 
+               class="btn-secondary text-center font-medium py-3 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-200 shadow-lg hover:shadow-xl inline-flex items-center space-x-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+                <span>Retour au dashboard</span>
+            </a>
+        </div>
+    </main>
+
+    {% include 'partials/_bottom_navigation.html.twig' %}
+
+    <!-- JavaScript for animations -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Parallax effect for floating orbs
+            document.addEventListener('mousemove', (e) => {
+                const x = e.clientX / window.innerWidth;
+                const y = e.clientY / window.innerHeight;
+                
+                const orbs = document.querySelector('.floating-orbs');
+                if (orbs) {
+                    orbs.style.transform = `translate(${x * 10}px, ${y * 10}px)`;
+                }
+            });
+
+            // Staggered animations for enfant cards
+            const cards = document.querySelectorAll('.animate-slide-in-left');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+            });
+        });
+    </script>
+</body>
+</html>

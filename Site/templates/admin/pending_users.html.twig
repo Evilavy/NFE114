@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Utilisateurs en attente - AlloParents Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    animation: {
+                        'fade-in': 'fadeIn 0.6s ease-out',
+                        'slide-in-left': 'slideInLeft 0.8s ease-out',
+                        'slide-in-right': 'slideInRight 0.8s ease-out',
+                        'pulse-glow': 'pulseGlow 3s ease-in-out infinite',
+                        'scale-in': 'scaleIn 0.4s ease-out',
+                        'float': 'float 6s ease-in-out infinite',
+                        'counter-up': 'counterUp 1s ease-out',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'scale(0.95)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' }
+                        },
+                        slideInLeft: {
+                            '0%': { transform: 'translateX(-30px)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' }
+                        },
+                        slideInRight: {
+                            '0%': { transform: 'translateX(30px)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' }
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { boxShadow: '0 0 20px rgba(255, 255, 255, 0.1)' },
+                            '50%': { boxShadow: '0 0 40px rgba(255, 255, 255, 0.2)' }
+                        },
+                        scaleIn: {
+                            '0%': { transform: 'scale(0.9)', opacity: '0' },
+                            '100%': { transform: 'scale(1)', opacity: '1' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' }
+                        },
+                        counterUp: {
+                            '0%': { transform: 'scale(0.8)', opacity: '0' },
+                            '100%': { transform: 'scale(1)', opacity: '1' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, 
+                #000000 0%, 
+                #1a1a1a 20%, 
+                #2d2d2d 40%, 
+                #404040 60%, 
+                #737373 80%, 
+                #ffffff 100%
+            );
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .glass-input {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #3b82f6, #2563eb, #1d4ed8);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(45deg, #2563eb, #1d4ed8, #1e40af);
+            transform: translateY(-2px);
+        }
+        
+        .btn-success {
+            background: linear-gradient(45deg, #10b981, #059669, #047857);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-success:hover {
+            background: linear-gradient(45deg, #059669, #047857, #065f46);
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(45deg, #ef4444, #dc2626, #b91c1c);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-danger:hover {
+            background: linear-gradient(45deg, #dc2626, #b91c1c, #991b1b);
+            transform: translateY(-2px);
+        }
+
+        .user-card {
+            transition: all 0.3s ease;
+        }
+
+        .user-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .floating-orbs::before,
+        .floating-orbs::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        
+        .floating-orbs::before {
+            width: 400px;
+            height: 400px;
+            top: -200px;
+            right: -200px;
+            animation: float 15s ease-in-out infinite;
+        }
+        
+        .floating-orbs::after {
+            width: 300px;
+            height: 300px;
+            bottom: -150px;
+            left: -150px;
+            animation: float 10s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: rotate(0deg) translate(-20px) rotate(0deg); }
+            50% { transform: rotate(180deg) translate(-20px) rotate(-180deg); }
+        }
+
+        .text-shadow {
+            text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+        }
+
+        .status-pending {
+            background: linear-gradient(45deg, #f59e0b, #d97706);
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+
+        .role-badge-parent {
+            background: linear-gradient(45deg, #3b82f6, #1d4ed8);
+        }
+
+        .role-badge-grandparent {
+            background: linear-gradient(45deg, #8b5cf6, #7c3aed);
+        }
+
+        .role-badge-other {
+            background: linear-gradient(45deg, #6b7280, #4b5563);
+        }
+
+        .verified-badge {
+            background: linear-gradient(45deg, #10b981, #059669);
+        }
+
+        .pending-badge {
+            background: linear-gradient(45deg, #f59e0b, #d97706);
+        }
+    </style>
+</head>
+
+<body class="gradient-bg min-h-screen">
+    <!-- Background Effects -->
+    <div class="floating-orbs fixed inset-0 pointer-events-none"></div>
+    
+    <!-- Top Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 glass-card border-b border-white/10">
+        <div class="px-4 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <a href="{{ path('admin_dashboard') }}" class="w-8 h-8 rounded-full bg-gradient-to-r from-gray-800 to-gray-600 flex items-center justify-center">
+                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                    </a>
+                    <h1 class="text-white font-bold text-lg text-shadow">Utilisateurs en attente</h1>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-gradient-to-r from-blue-600 to-blue-500 rounded-full flex items-center justify-center">
+                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/>
+                        </svg>
+                    </div>
+                    <a href="{{ path('admin_dashboard') }}" class="w-8 h-8 bg-gradient-to-r from-purple-600 to-purple-500 rounded-full flex items-center justify-center hover:from-purple-700 hover:to-purple-600 transition-all duration-300" title="Administration">
+                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                    </a>
+                    <a href="{{ path('app_logout') }}" class="w-8 h-8 bg-gradient-to-r from-red-600 to-red-500 rounded-full flex items-center justify-center hover:from-red-700 hover:to-red-600 transition-all duration-300" title="Déconnexion">
+                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-24 px-4 pb-24">
+
+        <!-- Flash Messages -->
+    {% for message in app.flashes('success') %}
+            <div class="mb-6 glass-card rounded-2xl p-4 animate-scale-in border-green-500/30">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center">
+                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </div>
+                    <p class="text-green-400 font-medium">{{ message }}</p>
+                </div>
+        </div>
+    {% endfor %}
+
+        <!-- Header Section -->
+        <div class="mb-8 glass-card rounded-3xl p-6 animate-fade-in">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-gradient-to-r from-blue-600 to-blue-500 rounded-full flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-white">Validation des utilisateurs</h2>
+                        <p class="text-gray-300">Examinez et approuvez les nouvelles inscriptions</p>
+                    </div>
+                </div>
+                {% if pendingUsers is not empty %}
+                    <div class="text-center">
+                        <span class="status-pending text-white text-xs font-bold px-3 py-1 rounded-full animate-counter-up">
+                            {{ pendingUsers|length }} en attente
+                        </span>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Stats Section -->
+        {% if pendingUsers is not empty %}
+            <div class="mb-8 glass-card rounded-3xl p-6 animate-slide-in-left">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white animate-counter-up">{{ pendingUsers|length }}</h3>
+                        <p class="text-gray-300 text-sm">Total en attente</p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white animate-counter-up">{{ pendingUsers|filter(u => u.role == 'parent')|length }}</h3>
+                        <p class="text-gray-300 text-sm">Parents</p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white animate-counter-up">{{ pendingUsers|filter(u => u.role == 'grand_parent')|length }}</h3>
+                        <p class="text-gray-300 text-sm">Grands-parents</p>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Content -->
+                    {% if pendingUsers is empty %}
+            <!-- Empty State -->
+            <div class="glass-card rounded-3xl p-8 text-center animate-fade-in">
+                <div class="w-24 h-24 bg-gradient-to-r from-green-600 to-green-500 rounded-full flex items-center justify-center mx-auto mb-6 animate-float">
+                    <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-2">Aucun utilisateur en attente</h3>
+                <p class="text-gray-400 mb-6">Toutes les demandes d'inscription ont été traitées ! Excellent travail.</p>
+                <a href="{{ path('admin_dashboard') }}" class="btn-primary text-white font-medium py-3 px-6 rounded-2xl transition-all duration-300 text-center transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-white/20 shadow-lg hover:shadow-xl">
+                    Retour au dashboard
+                </a>
+            </div>
+                    {% else %}
+            <!-- Users Cards -->
+            <div class="space-y-6">
+                                    {% for user in pendingUsers %}
+                    <div class="glass-card rounded-3xl p-6 user-card animate-slide-in-left" style="animation-delay: {{ loop.index0 * 0.1 }}s">
+                        <!-- Header -->
+                        <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 mb-6">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-16 h-16 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full flex items-center justify-center">
+                                    <span class="text-white font-bold text-lg">{{ user.prenom|slice(0, 1) }}{{ user.nom|slice(0, 1) }}</span>
+                                </div>
+                                <div>
+                                    <h3 class="text-2xl font-bold text-white">{{ user.prenom }} {{ user.nom }}</h3>
+                                    <p class="text-gray-300 text-lg">{{ user.email }}</p>
+                                    <div class="flex items-center space-x-2 mt-2">
+                                        <span class="status-pending text-white text-xs font-bold px-2 py-1 rounded-full">
+                                            En attente
+                                        </span>
+                                                {% if user.role == 'parent' %}
+                                            <span class="role-badge-parent text-white text-xs font-bold px-2 py-1 rounded-full">
+                                                👨‍👩‍👧‍👦 Parent
+                                            </span>
+                                                {% elseif user.role == 'grand_parent' %}
+                                            <span class="role-badge-grandparent text-white text-xs font-bold px-2 py-1 rounded-full">
+                                                👴👵 Grand-parent
+                                            </span>
+                                                {% elseif user.role == 'autre' %}
+                                            <span class="role-badge-other text-white text-xs font-bold px-2 py-1 rounded-full">
+                                                👤 Autre{% if user.roleAutre %} ({{ user.roleAutre }}){% endif %}
+                                            </span>
+                                                    {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Action Buttons -->
+                            <div class="flex flex-col sm:flex-row gap-3">
+                                <a href="{{ path('admin_view_user', {'id': user.id}) }}" class="btn-primary text-white font-medium py-2 px-4 rounded-xl transition-all duration-300 text-center transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-white/20 shadow-lg hover:shadow-xl text-sm">
+                                    <div class="flex items-center justify-center space-x-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                        </svg>
+                                        <span>Voir détails</span>
+                                    </div>
+                                </a>
+                                
+                                <form method="POST" action="{{ path('admin_approve_user', {'id': user.id}) }}" class="inline">
+                                    <button type="submit" 
+                                            class="btn-success text-white font-medium py-2 px-4 rounded-xl transition-all duration-300 text-center transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-white/20 shadow-lg hover:shadow-xl text-sm w-full sm:w-auto"
+                                            onclick="return confirm('Êtes-vous sûr de vouloir approuver cet utilisateur ?')">
+                                        <div class="flex items-center justify-center space-x-2">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                            </svg>
+                                            <span>Approuver</span>
+                                        </div>
+                                                        </button>
+                                                    </form>
+                                
+                                <form method="POST" action="{{ path('admin_reject_user', {'id': user.id}) }}" class="inline">
+                                    <button type="submit" 
+                                            class="btn-danger text-white font-medium py-2 px-4 rounded-xl transition-all duration-300 text-center transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-white/20 shadow-lg hover:shadow-xl text-sm w-full sm:w-auto"
+                                            onclick="return confirm('Êtes-vous sûr de vouloir rejeter cet utilisateur ? Cette action est irréversible.')">
+                                        <div class="flex items-center justify-center space-x-2">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                            </svg>
+                                            <span>Rejeter</span>
+                                        </div>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                        </div>
+                        
+                        <!-- Information Details -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="glass-input rounded-2xl p-4">
+                                <div class="flex items-center space-x-3 mb-3">
+                                    <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
+                                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"/>
+                                        </svg>
+                                    </div>
+                                    <h4 class="text-white font-semibold">Adresse e-mail</h4>
+                                </div>
+                                <p class="text-gray-300">{{ user.email }}</p>
+                                <div class="mt-2">
+                                    {% if user.isVerified %}
+                                        <span class="verified-badge text-white text-xs font-bold px-2 py-1 rounded-full">
+                                            ✓ E-mail vérifié
+                                        </span>
+                                    {% else %}
+                                        <span class="pending-badge text-white text-xs font-bold px-2 py-1 rounded-full">
+                                            ⏳ E-mail non vérifié
+                                        </span>
+                    {% endif %}
+                </div>
+            </div>
+                            
+                            <div class="glass-input rounded-2xl p-4">
+                                <div class="flex items-center space-x-3 mb-3">
+                                    <div class="w-8 h-8 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full flex items-center justify-center">
+                                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                        </svg>
+                                    </div>
+                                    <h4 class="text-white font-semibold">Inscription</h4>
+                                </div>
+                                <p class="text-gray-300">{{ user.createdAt|date('d/m/Y à H:i') }}</p>
+                                <p class="text-gray-400 text-sm mt-1">
+                                    {% set daysDiff = date().diff(user.createdAt).days %}
+                                    {% if daysDiff == 0 %}
+                                        Aujourd'hui
+                                    {% elseif daysDiff == 1 %}
+                                        Il y a 1 jour
+                                    {% else %}
+                                        Il y a {{ daysDiff }} jours
+                                    {% endif %}
+                                </p>
+        </div>
+    </div>
+                        
+                        <!-- Role Details -->
+                        {% if user.role == 'autre' and user.roleAutre %}
+                            <div class="mt-6 glass-input rounded-2xl p-4">
+                                <div class="flex items-center space-x-3 mb-3">
+                                    <div class="w-8 h-8 bg-gradient-to-r from-gray-500 to-gray-600 rounded-full flex items-center justify-center">
+                                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+                                        </svg>
+                                    </div>
+                                    <h4 class="text-white font-semibold">Rôle spécifique</h4>
+                                </div>
+                                <p class="text-gray-300">{{ user.roleAutre }}</p>
+                                <p class="text-gray-400 text-sm mt-1">Rôle personnalisé défini par l'utilisateur</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+</div>
+        {% endif %}
+
+    </main>
+
+    <!-- JavaScript for animations -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Parallax effect for floating orbs
+            document.addEventListener('mousemove', (e) => {
+                const x = e.clientX / window.innerWidth;
+                const y = e.clientY / window.innerHeight;
+                
+                const orbs = document.querySelector('.floating-orbs');
+                if (orbs) {
+                    orbs.style.transform = `translate(${x * 8}px, ${y * 8}px)`;
+                }
+            });
+
+            // Animate counters
+            function animateCounters() {
+                const counters = document.querySelectorAll('.animate-counter-up');
+                counters.forEach(counter => {
+                    const target = parseInt(counter.textContent);
+                    let current = 0;
+                    const increment = target / 30;
+                    const timer = setInterval(() => {
+                        current += increment;
+                        if (current >= target) {
+                            counter.textContent = target;
+                            clearInterval(timer);
+                        } else {
+                            counter.textContent = Math.floor(current);
+                        }
+                    }, 50);
+                });
+            }
+
+            // Start counter animation after a delay
+            setTimeout(animateCounters, 500);
+        });
+    </script>
+</body>
+</html>

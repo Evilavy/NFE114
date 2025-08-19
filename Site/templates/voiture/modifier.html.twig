@@ -1,0 +1,89 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier la voiture{% endblock %}
+
+{% block body %}
+<div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+    <div style="margin-bottom: 30px;">
+        <h1 style="color: #333; margin-bottom: 10px;">Modifier la voiture</h1>
+        <a href="{{ path('voiture_index') }}" style="color: #007bff; text-decoration: none;">← Retour à mes voitures</a>
+    </div>
+
+    {% for message in app.flashes('error') %}
+        <div style="background-color: #f8d7da; color: #721c24; padding: 15px; margin-bottom: 20px; border-radius: 5px; border: 1px solid #f5c6cb;">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {% for message in app.flashes('warning') %}
+        <div style="background-color: #fff3cd; color: #856404; padding: 15px; margin-bottom: 20px; border-radius: 5px; border: 1px solid #ffeaa7;">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {% if trajetsFuturs is not empty %}
+        <div style="background-color: #fff3cd; color: #856404; padding: 15px; margin-bottom: 20px; border-radius: 5px; border: 1px solid #ffeaa7;">
+            <h4 style="margin: 0 0 10px 0; color: #856404;">⚠️ Attention : Cette voiture est utilisée dans {{ trajetsFuturs|length }} trajet(s) futur(s)</h4>
+            <p style="margin: 0 0 10px 0;">Vous ne pourrez pas modifier cette voiture tant qu'elle sera utilisée dans des trajets actifs.</p>
+            <ul style="margin: 0; padding-left: 20px;">
+                {% for trajet in trajetsFuturs %}
+                    <li>
+                        <strong>Trajet #{{ trajet.id }}</strong> : {{ trajet.pointDepart }} → {% if trajet.ecole is defined and trajet.ecole.nom is defined %}{{ trajet.ecole.nom }} - {{ trajet.ecole.ville }}{% else %}École de destination{% endif %} 
+                        ({{ trajet.dateDepart|date('d/m/Y') }} à {{ trajet.heureDepart }})
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <div style="background-color: white; border: 1px solid #dee2e6; border-radius: 10px; padding: 30px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <form method="post" {% if trajetsFuturs is not empty %}style="opacity: 0.6; pointer-events: none;"{% endif %}>
+            <div style="margin-bottom: 20px;">
+                <label for="marque" style="display: block; margin-bottom: 5px; font-weight: bold; color: #495057;">Marque *</label>
+                <input type="text" id="marque" name="marque" value="{{ voiture.marque }}" required 
+                       style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 5px; font-size: 16px;"
+                       placeholder="Ex: Renault, Peugeot, Citroën...">
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label for="modele" style="display: block; margin-bottom: 5px; font-weight: bold; color: #495057;">Modèle *</label>
+                <input type="text" id="modele" name="modele" value="{{ voiture.modele }}" required 
+                       style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 5px; font-size: 16px;"
+                       placeholder="Ex: Clio, 208, C3...">
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label for="couleur" style="display: block; margin-bottom: 5px; font-weight: bold; color: #495057;">Couleur *</label>
+                <input type="text" id="couleur" name="couleur" value="{{ voiture.couleur }}" required 
+                       style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 5px; font-size: 16px;"
+                       placeholder="Ex: Blanc, Bleu, Rouge...">
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label for="immatriculation" style="display: block; margin-bottom: 5px; font-weight: bold; color: #495057;">Immatriculation *</label>
+                <input type="text" id="immatriculation" name="immatriculation" value="{{ voiture.immatriculation }}" required 
+                       style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 5px; font-size: 16px; font-family: monospace;"
+                       placeholder="Ex: AB-123-CD">
+            </div>
+
+            <div style="margin-bottom: 30px;">
+                <label for="nombrePlaces" style="display: block; margin-bottom: 5px; font-weight: bold; color: #495057;">Nombre de places *</label>
+                <input type="number" id="nombrePlaces" name="nombrePlaces" value="{{ voiture.nombrePlaces }}" min="1" max="9" required 
+                       style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 5px; font-size: 16px;"
+                       placeholder="Ex: 5">
+                <small style="color: #6c757d; font-size: 14px;">Ne pas inclure la place du conducteur dans le nombre de places</small>
+            </div>
+
+            <div style="display: flex; gap: 15px;">
+                <button type="submit" style="background-color: #007bff; color: white; border: none; padding: 12px 30px; border-radius: 5px; font-size: 16px; cursor: pointer; flex: 1;">
+                    Enregistrer les modifications
+                </button>
+                <a href="{{ path('voiture_index') }}" style="background-color: #6c757d; color: white; text-decoration: none; padding: 12px 30px; border-radius: 5px; font-size: 16px; text-align: center; flex: 1;">
+                    Annuler
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %} 
+ 
