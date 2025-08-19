@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/evilavytingakotto/Documents/symfony/PointsApi/PointsApi.csproj": {}
+    "/Users/evilavytingakotto/Documents/NFE114/PointsApi/PointsApi.csproj": {}
   },
   "projects": {
-    "/Users/evilavytingakotto/Documents/symfony/PointsApi/PointsApi.csproj": {
+    "/Users/evilavytingakotto/Documents/NFE114/PointsApi/PointsApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/evilavytingakotto/Documents/symfony/PointsApi/PointsApi.csproj",
+        "projectUniqueName": "/Users/evilavytingakotto/Documents/NFE114/PointsApi/PointsApi.csproj",
         "projectName": "PointsApi",
-        "projectPath": "/Users/evilavytingakotto/Documents/symfony/PointsApi/PointsApi.csproj",
+        "projectPath": "/Users/evilavytingakotto/Documents/NFE114/PointsApi/PointsApi.csproj",
         "packagesPath": "/Users/evilavytingakotto/.nuget/packages/",
-        "outputPath": "/Users/evilavytingakotto/Documents/symfony/PointsApi/obj/",
+        "outputPath": "/Users/evilavytingakotto/Documents/NFE114/PointsApi/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/evilavytingakotto/.nuget/NuGet/NuGet.Config"

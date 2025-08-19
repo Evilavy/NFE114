@@ -19,7 +19,7 @@
         <properties>
             <!-- Driver SQLite -->
             <property name="jakarta.persistence.jdbc.driver" value="org.sqlite.JDBC"/>
-            <property name="jakarta.persistence.jdbc.url" value="jdbc:sqlite:/Users/evilavytingakotto/Documents/symfony/Site/var/data_dev.db"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:sqlite:../../Site/var/app.db"/>
             
             <!-- Configuration Hibernate pour SQLite -->
             <property name="hibernate.dialect" value="org.hibernate.community.dialect.SQLiteDialect"/>
