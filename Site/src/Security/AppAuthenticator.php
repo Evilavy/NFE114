@@ -13,7 +13,7 @@ use Symfony\Component\Security\Http\Authenticator\AbstractLoginFormAuthenticator
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\CsrfTokenBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\RememberMeBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
-use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordCredentials;
+use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\CustomCredentials;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
@@ -43,10 +43,11 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
                 "Trop de tentatives de connexion échouées. Votre IP est temporairement bloquée. Réessayez dans {$remainingTime}."
             );
         }
+        
         // récupère la valeur du champ _username (email)
         $email = $request->request->get('_username', '');
 
-        // pré-remplir le formulaire de login si l’utilisateur se trompe de mot de passe
+        // pré-remplir le formulaire de login si l'utilisateur se trompe de mot de passe
         $request->getSession()->set('_security.last_username', $email);
 
         return new Passport(
@@ -63,7 +64,19 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
                 
                 return $user;
             }),
-            new PasswordCredentials($request->request->get('_password', '')),
+            new CustomCredentials(function($credentials, JavaUser $user) {
+                $plainPassword = $credentials;
+                $hashedPassword = $user->getPassword();
+                
+                // Vérifier si le mot de passe est déjà hashé (commence par $2a$ ou $2y$)
+                if (strpos($hashedPassword, '$2a$') === 0 || strpos($hashedPassword, '$2y$') === 0) {
+                    // Mot de passe hashé, utiliser password_verify
+                    return password_verify($plainPassword, $hashedPassword);
+                } else {
+                    // Mot de passe en clair (ancien format), comparaison directe
+                    return $plainPassword === $hashedPassword;
+                }
+            }, $request->request->get('_password', '')),
             [
                 new CsrfTokenBadge('authenticate', $request->request->get('_csrf_token')),
                 new RememberMeBadge(),

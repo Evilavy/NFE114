@@ -25,7 +25,7 @@ class JavaUser implements UserInterface, PasswordAuthenticatedUserInterface
         $roles = ['ROLE_USER'];
         
         // Si c'est un admin
-        if ($this->userData['email'] === 'admin@example.com') {
+        if ($this->userData['email'] === 'admin@alloparents.com') {
             $roles[] = 'ROLE_ADMIN';
         }
         

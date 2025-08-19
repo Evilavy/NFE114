@@ -31,17 +31,23 @@ class RegistrationController extends AbstractController
                     /** @var string $plainPassword */
                     $plainPassword = $form->get('plainPassword')->getData();
 
+                    // Debug: Afficher le mot de passe en clair
+                    error_log("Plain password: " . $plainPassword);
+
+                    // Hash le mot de passe directement avec password_hash()
+                    $hashedPassword = password_hash($plainPassword, PASSWORD_BCRYPT);
+
                     // Préparer les données utilisateur pour l'API Java
                     $userData = [
                         'nom' => $form->get('nom')->getData(),
                         'prenom' => $form->get('prenom')->getData(),
                         'email' => $form->get('email')->getData(),
-                        'password' => $userPasswordHasher->hashPassword(
-                            new \App\Security\JavaUser(['password' => $plainPassword]), 
-                            $plainPassword
-                        ),
+                        'password' => $hashedPassword,
                         'role' => $form->get('role')->getData()
                     ];
+
+                    // Debug: Afficher le mot de passe hashé
+                    error_log("Hashed password: " . $userData['password']);
 
                     // Gérer le rôle "autre"
                     $role = $form->get('role')->getData();
@@ -50,6 +56,9 @@ class RegistrationController extends AbstractController
                     if ($role === 'autre' && !empty($roleAutre)) {
                         $userData['roleAutre'] = $roleAutre;
                     }
+
+                    // Debug: Afficher toutes les données envoyées
+                    error_log("User data sent to Java API: " . json_encode($userData));
 
                     // Créer l'utilisateur via l'API Java
                     $response = $this->httpClient->request('POST', $this->javaApiUrl . '/users', [
@@ -63,6 +72,9 @@ class RegistrationController extends AbstractController
                         $this->addFlash('error', 'Une erreur s\'est produite lors de l\'inscription. Veuillez réessayer.');
                     }
                 } catch (\Exception $e) {
+                    // Debug: Afficher l'erreur complète
+                    error_log("Registration error: " . $e->getMessage());
+                    error_log("Stack trace: " . $e->getTraceAsString());
                     $this->addFlash('error', 'Une erreur s\'est produite lors de l\'inscription. Veuillez réessayer.');
                 }
             } else {
