@@ -1,0 +1,11 @@
+com/demo/UserResource.class
+com/demo/model/Ecole.class
+com/demo/model/User.class
+com/demo/HelloResource.class
+com/demo/EcoleResource.class
+com/demo/model/Trajet.class
+com/demo/TrajetResource.class
+com/demo/service/EntityManagerService.class
+com/demo/model/Message.class
+com/demo/MessageResource.class
+com/demo/DemoApplication.class

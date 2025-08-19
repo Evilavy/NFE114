@@ -1,0 +1,6 @@
+@PointsApi_HostAddress = http://localhost:5164
+
+GET {{PointsApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

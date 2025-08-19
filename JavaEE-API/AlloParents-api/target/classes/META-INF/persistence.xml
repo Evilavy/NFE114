@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
+             http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd"
+             version="2.2">
+
+    <persistence-unit name="AlloParentsPU" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        
+        <!-- Entités JPA -->
+        <class>com.demo.model.User</class>
+        <class>com.demo.model.Ecole</class>
+        <class>com.demo.model.Enfant</class>
+        <class>com.demo.model.Trajet</class>
+        <class>com.demo.model.Message</class>
+        
+        <!-- Configuration SQLite -->
+        <properties>
+            <!-- Driver SQLite -->
+            <property name="jakarta.persistence.jdbc.driver" value="org.sqlite.JDBC"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:sqlite:/Users/evilavytingakotto/Documents/symfony/Site/var/data_dev.db"/>
+            
+            <!-- Configuration Hibernate pour SQLite -->
+            <property name="hibernate.dialect" value="org.hibernate.community.dialect.SQLiteDialect"/>
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+            
+            <!-- Pool de connexions -->
+            <property name="hibernate.connection.pool_size" value="1"/>
+            <property name="hibernate.connection.autocommit" value="false"/>
+            
+            <!-- Cache désactivé pour SQLite -->
+            <property name="hibernate.cache.use_second_level_cache" value="false"/>
+            <property name="hibernate.cache.use_query_cache" value="false"/>
+            
+            <!-- Configuration spécifique SQLite -->
+            <property name="hibernate.connection.isolation" value="1"/>
+            <property name="hibernate.jdbc.batch_size" value="0"/>
+            <property name="hibernate.order_inserts" value="false"/>
+            <property name="hibernate.order_updates" value="false"/>
+            <property name="hibernate.jdbc.batch_versioned_data" value="false"/>
+        </properties>
+    </persistence-unit>
+</persistence> 

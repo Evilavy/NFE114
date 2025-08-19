@@ -1,0 +1,90 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+ <modelVersion>4.0.0</modelVersion>
+ <groupId>com.demo</groupId>
+ <artifactId>AlloParents-api</artifactId>
+ <packaging>war</packaging>
+ <version>1.0-SNAPSHOT</version>
+ <name>demo-api Maven Webapp</name>
+ <url>http://maven.apache.org</url>
+ <!-- On utilise la version 21 de Java -->
+ <properties>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+ </properties>
+ <dependencies>
+    <dependency>
+        <groupId>jakarta.platform</groupId>
+        <artifactId>jakarta.jakartaee-api</artifactId>
+        <version>10.0.0</version>
+        <scope>provided</scope>
+    </dependency>
+    
+    <!-- JPA/Hibernate pour la base de données -->
+    <dependency>
+        <groupId>org.hibernate.orm</groupId>
+        <artifactId>hibernate-core</artifactId>
+        <version>6.2.13.Final</version>
+    </dependency>
+    
+    <!-- Driver SQLite -->
+            <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.44.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-community-dialects</artifactId>
+            <version>6.4.4.Final</version>
+        </dependency>
+    
+    <!-- JSON-B pour la sérialisation -->
+    <dependency>
+        <groupId>org.eclipse.parsson</groupId>
+        <artifactId>parsson</artifactId>
+        <version>1.0.0</version>
+    </dependency>
+    
+    <!-- Jersey pour JAX-RS -->
+    <dependency>
+        <groupId>org.glassfish.jersey.containers</groupId>
+        <artifactId>jersey-container-servlet</artifactId>
+        <version>3.1.5</version>
+    </dependency>
+    
+    <!-- Jersey Media Multipart pour les uploads -->
+    <dependency>
+        <groupId>org.glassfish.jersey.media</groupId>
+        <artifactId>jersey-media-multipart</artifactId>
+        <version>3.1.5</version>
+    </dependency>
+    
+    <!-- Jersey Injection HK2 -->
+    <dependency>
+        <groupId>org.glassfish.jersey.inject</groupId>
+        <artifactId>jersey-hk2</artifactId>
+        <version>3.1.5</version>
+    </dependency>
+ </dependencies>
+ <build>
+    <finalName>demo-api</finalName>
+    <plugins>
+      <!-- Utilisation plugin Payara Micro -->
+       <plugin>
+        <groupId>fish.payara.maven.plugins</groupId>
+        <artifactId>payara-micro-maven-plugin</artifactId>
+        <version>1.0.2</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>bundle</goal>
+              <goal>start</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+   </plugins>
+ </build>
+</project>
