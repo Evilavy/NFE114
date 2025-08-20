@@ -7,7 +7,7 @@ Application de covoiturage scolaire pour les parents d'élèves.
 ### Prérequis
 - PHP 8.1+
 - Composer
-- Java 21+
+- Java 17+
 - Maven
 - .NET 9.0+
 - Symfony CLI
@@ -37,7 +37,7 @@ cd Site
 ```bash
 cd JavaEE-API/AlloParents-api
 mvn clean package
-java -jar payara-micro.jar --deploy target/demo-api.war --port 8080
+java -jar payara-micro.jar --deploy target/demo-api.war --port 8080 --noCluster
 ```
 
 ### 2. Démarrer l'API Points (.NET)
