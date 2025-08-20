@@ -60,6 +60,50 @@ class ChatController extends AbstractController
             $error = "Erreur lors de la récupération du trajet: " . $e->getMessage();
         }
 
+        // Bloquer l'accès à la conversation si l'utilisateur n'est plus lié au trajet
+        if ($trajet) {
+            $enfantsIds = $trajet['enfantsIds'] ?? [];
+            $conducteurId = $trajet['conducteurId'] ?? null;
+
+            if ($conducteurId == $userId) {
+                // L'utilisateur est conducteur: la conversation n'est valable que si le parent (destinataire) a encore au moins un enfant dans le trajet
+                $autreParentToujoursInscrit = false;
+                foreach ($enfantsIds as $enfantId) {
+                    try {
+                        $enfant = $enfantRepository->find($enfantId);
+                        if ($enfant && $enfant->getUserId() == $destinataireId) {
+                            $autreParentToujoursInscrit = true;
+                            break;
+                        }
+                    } catch (\Exception $e) {
+                        // ignorer
+                    }
+                }
+                if (!$autreParentToujoursInscrit) {
+                    $this->addFlash('error', 'Cette conversation n\'est plus disponible car l\'enfant a été retiré du trajet.');
+                    return $this->redirectToRoute('chat_messages');
+                }
+            } else {
+                // L'utilisateur est parent: la conversation n'est valable que s'il a encore au moins un enfant dans le trajet
+                $userToujoursInscrit = false;
+                foreach ($enfantsIds as $enfantId) {
+                    try {
+                        $enfant = $enfantRepository->find($enfantId);
+                        if ($enfant && $enfant->getUserId() == $userId) {
+                            $userToujoursInscrit = true;
+                            break;
+                        }
+                    } catch (\Exception $e) {
+                        // ignorer
+                    }
+                }
+                if (!$userToujoursInscrit) {
+                    $this->addFlash('error', 'Cette conversation n\'est plus disponible car vous n\'avez plus d\'enfant inscrit à ce trajet.');
+                    return $this->redirectToRoute('chat_messages');
+                }
+            }
+        }
+
         // Récupérer les messages de la conversation
         try {
             $response = $this->httpClient->request('GET', $this->javaApiUrl . '/messages/conversation/' . $trajetId . '/' . $userId . '/' . $destinataireId);
@@ -236,6 +280,46 @@ class ChatController extends AbstractController
                 $trajet['statut'] === 'annule' || 
                 $dateTrajet < $aujourdhui) {
                 continue; // Ignorer cette conversation
+            }
+
+            // Filtrer les conversations quand il n'y a plus de lien via un enfant inscrit
+            $conducteurId = $trajet['conducteurId'] ?? null;
+            $enfantsIds = $trajet['enfantsIds'] ?? [];
+
+            if ($conducteurId == $userId) {
+                // L'utilisateur est conducteur: garder uniquement si l'autre utilisateur a un enfant dans ce trajet
+                $autreParentToujoursInscrit = false;
+                foreach ($enfantsIds as $enfantId) {
+                    try {
+                        $enfant = $enfantRepository->find($enfantId);
+                        if ($enfant && $enfant->getUserId() == $autreUserId) {
+                            $autreParentToujoursInscrit = true;
+                            break;
+                        }
+                    } catch (\Exception $e) {
+                        // ignorer
+                    }
+                }
+                if (!$autreParentToujoursInscrit) {
+                    continue; // plus de lien actif
+                }
+            } else {
+                // L'utilisateur est parent: garder uniquement s'il a encore un enfant dans le trajet
+                $userToujoursInscrit = false;
+                foreach ($enfantsIds as $enfantId) {
+                    try {
+                        $enfant = $enfantRepository->find($enfantId);
+                        if ($enfant && $enfant->getUserId() == $userId) {
+                            $userToujoursInscrit = true;
+                            break;
+                        }
+                    } catch (\Exception $e) {
+                        // ignorer
+                    }
+                }
+                if (!$userToujoursInscrit) {
+                    continue; // plus de lien actif
+                }
             }
             
             if (!isset($conversationsGrouped[$key])) {

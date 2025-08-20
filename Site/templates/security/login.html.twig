@@ -109,10 +109,16 @@
         .text-shadow {
             text-shadow: 0 2px 20px rgba(0,0,0,0.1);
         }
+        
+        /* Prevent horizontal overflow on mobile */
+        html, body {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
     </style>
 </head>
 
-<body class="gradient-bg min-h-screen overflow-hidden">
+<body class="gradient-bg h-[100vh] w-[100vw] overflow-hidden">
     <!-- Animated Background -->
     <div class="floating-orbs absolute inset-0 pointer-events-none"></div>
     
