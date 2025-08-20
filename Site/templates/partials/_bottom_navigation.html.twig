@@ -16,16 +16,16 @@
             
             <!-- Rechercher -->
             <a href="{{ path('trajet_rechercher') }}" class="flex flex-col items-center space-y-1 {% if app.request.get('_route') == 'trajet_rechercher' %}text-blue-600{% else %}text-gray-500{% endif %}">
-                <svg class="w-5 h-5" {% if app.request.get('_route') == 'trajet_rechercher' %}fill="currentColor"{% else %}fill="none" stroke="currentColor"{% endif %} viewBox="0 0 24 24">
-                    <path {% if app.request.get('_route') != 'trajet_rechercher' %}stroke-linecap="round" stroke-linejoin="round" stroke-width="2"{% endif %} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
                 <span class="text-xs">Rechercher</span>
             </a>
             
             <!-- Créer -->
             <a href="{{ path('trajet_ajouter') }}" class="flex flex-col items-center space-y-1 {% if app.request.get('_route') == 'trajet_ajouter' %}text-blue-600{% else %}text-gray-500{% endif %}">
-                <svg class="w-5 h-5" {% if app.request.get('_route') == 'trajet_ajouter' %}fill="currentColor"{% else %}fill="none" stroke="currentColor"{% endif %} viewBox="0 0 24 24">
-                    <path {% if app.request.get('_route') != 'trajet_ajouter' %}stroke-linecap="round" stroke-linejoin="round" stroke-width="2"{% endif %} d="M12 4v16m8-8H4"/>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                 </svg>
                 <span class="text-xs">Créer</span>
             </a>
@@ -56,9 +56,7 @@
 <div id="moreMenu" class="fixed bottom-20 right-4 glass-card rounded-2xl border border-gray-200 shadow-xl transform scale-0 origin-bottom-right transition-all duration-300 z-40 bg-white/95 backdrop-blur-20" style="min-width: 200px;">
     <div class="p-2">
         <a href="{{ path('trajet_mes_trajets') }}" class="flex items-center space-x-3 p-3 rounded-xl hover:bg-gray-100 transition-colors text-gray-600 hover:text-gray-800">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H9m0 0H5m0 0h2M7 7h10M7 11h4m6 0h4M7 15h10"/>
-            </svg>
+            <img src="/assets/trajet.svg" alt="Mes trajets" class="w-5 h-5" />
             <span class="text-sm font-medium">Mes trajets</span>
         </a>
         <a href="{{ path('mes_reservations') }}" class="flex items-center space-x-3 p-3 rounded-xl hover:bg-gray-100 transition-colors text-gray-600 hover:text-gray-800">

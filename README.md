@@ -55,17 +55,9 @@ symfony server:start
 ### 4. Accéder à l'application
 Ouvrez votre navigateur sur : http://127.0.0.1:8000
 
-## 🚀 Démarrage automatique
-
-Vous pouvez utiliser le script `start-all.sh` à la racine du projet pour démarrer tous les services automatiquement :
-
-```bash
-./start-all.sh
-```
-
 ## 👥 Comptes de test
 
-### Admin
+### Parent avec rôle Admin
 - **Email** : admin@alloparents.com
 - **Mot de passe** : admin123
 
@@ -93,3 +85,27 @@ L'application utilise une base de données SQLite unifiée (`Site/var/app.db`) p
 ## 📚 Documentation
 
 Pour plus de détails sur la configuration Symfony, consultez `Site/README_SETUP.md`.
+
+## 🚗 Exemple d'utilisation
+
+### Créer un trajet
+1. Connectez-vous avec un compte parent
+2. Cliquez sur "Créer" dans le menu de navigation
+3. Remplissez les informations du trajet :
+   - **Départ** : 21 rue de l'île de Sein, 49300 Cholet
+   - **Arrivée** : Collège Colbert, Cholet
+   - **Date** : Date souhaitée
+   - **Heure de départ** : 7h30
+   - **Nombre de places** : 4
+   - **Coût en points** : 5 points par enfant
+
+4. Ajoutez vos enfants qui participent au trajet
+5. Publiez le trajet
+
+### Réserver un trajet
+1. Connectez-vous avec un autre compte parent
+2. Recherchez des trajets disponibles
+3. Sélectionnez un trajet qui correspond à vos besoins
+4. Choisissez l'enfant à inscrire
+5. Confirmez la réservation (coût : 5 points)
+6. Communiquez avec le conducteur via la messagerie intégrée
