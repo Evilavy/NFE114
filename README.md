@@ -7,7 +7,7 @@ Application de covoiturage scolaire pour les parents d'élèves.
 ### Prérequis
 - PHP 8.1+
 - Composer
-- Java 17+
+- Java 21+
 - Maven
 - .NET 9.0+
 - Symfony CLI
