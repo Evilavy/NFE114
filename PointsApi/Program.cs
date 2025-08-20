@@ -18,8 +18,18 @@ builder.Services.AddCors(options =>
         });
 });
 
+// Resolve relative path in connection string against content root
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+if (connectionString != null && connectionString.Contains("Data Source=.."))
+{
+    var dataSourcePrefix = "Data Source=";
+    var relativePath = connectionString.Substring(connectionString.IndexOf(dataSourcePrefix) + dataSourcePrefix.Length);
+    var absolutePath = Path.GetFullPath(Path.Combine(builder.Environment.ContentRootPath, relativePath));
+    connectionString = $"Data Source={absolutePath}";
+}
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlite(connectionString));
 
 var app = builder.Build();
 
