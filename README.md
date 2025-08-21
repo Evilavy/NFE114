@@ -22,9 +22,10 @@ Application de covoiturage scolaire pour les parents d'élèves.
 - Symfony CLI
 
 ### Ports utilisés
-- **Symfony** : http://127.0.0.1:8000
-- **API JavaEE** : http://localhost:8080
-- **API Points (.NET)** : http://localhost:5000
+⚠️ Assurez-vous que les ports suivants sont libres avant de lancer les applications, afin d’éviter les conflits :  
+- **Symfony** : [http://127.0.0.1:8000](http://127.0.0.1:8000)  
+- **API JavaEE (Payara)** : [http://localhost:8080](http://localhost:8080)  
+- **API Points (.NET)** : [http://localhost:5000](http://localhost:5000)  
 
 ## 📦 Installation
 
