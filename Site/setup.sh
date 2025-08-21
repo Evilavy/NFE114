@@ -54,7 +54,6 @@ if [ ! -f "var/app.db" ]; then
         echo "❌ Erreur lors de la création de la base de données"
         exit 1
     fi
-    
     echo "🏗️  Création du schéma de base de données..."
     php bin/console doctrine:schema:create --quiet
     
