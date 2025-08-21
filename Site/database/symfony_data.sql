@@ -1,16 +1,20 @@
 -- Données par défaut pour Symfony (enfants, voitures, etc.)
 
 -- Insertion de l'école par défaut (si pas déjà présente)
-INSERT OR IGNORE INTO ecole (nom, adresse, code_postal, ville, valide, date_creation, date_validation) 
+INSERT OR IGNORE INTO ecole (nom, adresse, code_postal, ville, valide) 
 VALUES (
     'Collège Colbert',
     '50-72 Rue du Devau',
     '49300',
     'Cholet',
-    1,
-    datetime('now'),
-    datetime('now')
+    1
 );
+
+-- Insertion des utilisateurs par défaut
+INSERT OR IGNORE INTO user (email, nom, prenom, password, role, points, is_approved_by_admin, created_at) 
+VALUES 
+    ('admin@alloparents.com', 'Admin', 'Admin', '$2y$13$5bzXspVm9VZo7kCItKPlvO2.A4UaJEqIRZZgzgNKKFnjuMT0ZCmoS', 'ROLE_ADMIN', 0, 1, '2025-01-01 00:00:00'),
+    ('parent@alloparents.com', 'Martin', 'Parent', '$2y$13$flSJzAwpk/kxDJk8/Z4Th.TFP4cXAQjQlOLkSb7fCSzSAnfwtxa/O', 'ROLE_USER', 0, 1, '2025-01-01 00:00:00');
 
 -- Insertion des enfants pour l'admin (user_id = 1)
 INSERT OR IGNORE INTO enfant (nom, prenom, date_naissance, sexe, user_id, ecole, valide, date_creation, date_validation) 
@@ -27,9 +31,9 @@ VALUES
 -- Insertion des voitures pour l'admin (user_id = 1)
 INSERT OR IGNORE INTO voiture (marque, modele, couleur, immatriculation, nombre_places, user_id) 
 VALUES 
-    ('Renault', 'Clio', 'Bleu', 'AB-123-CD', 5, 1);
+    ('Renault', 'Clio', 'Bleu', 'AB-123-CD', 4, 1);
 
 -- Insertion des voitures pour le parent (user_id = 2)
 INSERT OR IGNORE INTO voiture (marque, modele, couleur, immatriculation, nombre_places, user_id) 
 VALUES 
-    ('Peugeot', '208', 'Blanc', 'EF-456-GH', 5, 2);
+    ('Peugeot', '208', 'Blanc', 'EF-456-GH', 4, 2);

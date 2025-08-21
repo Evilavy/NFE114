@@ -3551,11 +3551,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/evilavytingakotto/Documents/pls/PointsApi/PointsApi.csproj",
+      "projectUniqueName": "/Users/evilavytingakotto/Documents/test/PointsApi/PointsApi.csproj",
       "projectName": "PointsApi",
-      "projectPath": "/Users/evilavytingakotto/Documents/pls/PointsApi/PointsApi.csproj",
+      "projectPath": "/Users/evilavytingakotto/Documents/test/PointsApi/PointsApi.csproj",
       "packagesPath": "/Users/evilavytingakotto/.nuget/packages/",
-      "outputPath": "/Users/evilavytingakotto/Documents/pls/PointsApi/obj/",
+      "outputPath": "/Users/evilavytingakotto/Documents/test/PointsApi/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/evilavytingakotto/.nuget/NuGet/NuGet.Config"
