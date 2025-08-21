@@ -16,7 +16,8 @@ Application de covoiturage scolaire pour les parents d'élèves.
 - PHP 8.1+
 - Composer
 - Java 17+
-- Maven
+- Payara Micro 6.2025.7 (Build 39)
+- Apache Maven 3.9.10
 - .NET 9.0+
 - Symfony CLI
 
@@ -77,7 +78,7 @@ Ouvrez votre navigateur sur : http://127.0.0.1:8000
 
 ```
 NFE114/
-├── Site/                 # Application Symfony
+├── Site/                # Application Symfony
 ├── JavaEE-API/          # API JavaEE (utilisateurs)
 ├── PointsApi/           # API .NET (système de points)
 └── start-all.sh         # Script de démarrage automatique
