@@ -215,6 +215,20 @@
                 </div>
             </div>
         {% endfor %}
+        
+        <!-- Messages d'erreur -->
+        {% for message in app.flashes('error') %}
+            <div class="glass-card rounded-2xl p-4 mb-6 border-l-4 border-red-500 animate-slide-in-left">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-red-500/20 rounded-full flex items-center justify-center">
+                        <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </div>
+                    <div class="text-red-700 text-sm">{{ message }}</div>
+                </div>
+            </div>
+        {% endfor %}
 
         <!-- Utilisateurs List -->
         <div class="space-y-4 animate-slide-up">

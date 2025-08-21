@@ -199,6 +199,21 @@
                         </div>
                     {% endif %}
 
+                    <!-- Flash Messages -->
+                    {% for message in app.flashes('info') %}
+                        <div class="mb-6 p-4 rounded-2xl bg-blue-500/10 border border-blue-500/20 backdrop-blur-sm">
+                            <div class="flex items-start">
+                                <svg class="w-5 h-5 text-blue-600 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <div>
+                                    <p class="text-blue-700 text-sm font-medium">Information</p>
+                                    <p class="text-blue-600 text-xs mt-1 opacity-90">{{ message }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+
                     <!-- Already Logged In -->
                     {% if app.user %}
                         <div class="mb-6 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 backdrop-blur-sm">

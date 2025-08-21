@@ -74,7 +74,8 @@ class RegistrationController extends AbstractController
                     ]);
 
                     if ($response->getStatusCode() === 201) {
-                        $this->addFlash('success', 'Votre inscription a été enregistrée. Elle sera validée par un administrateur dans les plus brefs délais.');
+                        // Rediriger vers la page de connexion avec un message de session temporaire
+                        $this->addFlash('info', 'Votre inscription a été enregistrée. Elle sera validée par un administrateur dans les plus brefs délais.');
                         return $this->redirectToRoute('app_login');
                     } else {
                         $this->addFlash('error', 'Une erreur s\'est produite lors de l\'inscription. Veuillez réessayer.');
