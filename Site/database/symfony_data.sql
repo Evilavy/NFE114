@@ -41,8 +41,8 @@ VALUES (
 -- Insertion des utilisateurs par défaut
 INSERT OR IGNORE INTO user (email, nom, prenom, password, role, points, is_approved_by_admin, created_at) 
 VALUES 
-    ('admin@alloparents.com', 'Admin', 'Admin', '$2y$13$5bzXspVm9VZo7kCItKPlvO2.A4UaJEqIRZZgzgNKKFnjuMT0ZCmoS', 'ROLE_ADMIN', 0, 1, '2025-01-01 00:00:00'),
-    ('parent@alloparents.com', 'Martin', 'Parent', '$2y$13$flSJzAwpk/kxDJk8/Z4Th.TFP4cXAQjQlOLkSb7fCSzSAnfwtxa/O', 'ROLE_USER', 0, 1, '2025-01-01 00:00:00');
+    ('admin@alloparents.com', 'Admin', 'Admin', '$2y$13$5bzXspVm9VZo7kCItKPlvO2.A4UaJEqIRZZgzgNKKFnjuMT0ZCmoS', 'ROLE_ADMIN', 50, 1, '2025-01-01 00:00:00'),
+    ('parent@alloparents.com', 'Martin', 'Parent', '$2y$13$flSJzAwpk/kxDJk8/Z4Th.TFP4cXAQjQlOLkSb7fCSzSAnfwtxa/O', 'ROLE_USER', 50, 1, '2025-01-01 00:00:00');
 
 -- Insertion des enfants pour l'admin (user_id = 1)
 INSERT OR IGNORE INTO enfant (nom, prenom, date_naissance, sexe, user_id, ecole, valide, date_creation, date_validation) 
