@@ -16,7 +16,7 @@ Application de covoiturage scolaire pour les parents d'élèves.
 - PHP 8.1+
 - Composer
 - Java 17+
-- Payara Micro 6.2025.7 (Build 39)
+- Payara Micro 6.2025.7
 - Apache Maven 3.9.10
 - .NET 9.0+
 - Symfony CLI
