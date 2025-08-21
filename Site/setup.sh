@@ -62,15 +62,6 @@ if [ ! -f "var/app.db" ]; then
         exit 1
     fi
     
-    # Ajouter les tables de l'API JavaEE
-    echo "🔧 Ajout des tables de l'API JavaEE..."
-    if [ -f "database/javaee_tables.sql" ]; then
-        sqlite3 var/app.db < database/javaee_tables.sql
-        echo "✅ Tables de l'API JavaEE ajoutées"
-    else
-        echo "⚠️  Fichier database/javaee_tables.sql non trouvé"
-    fi
-    
     # Ajouter les données par défaut
     echo "📝 Ajout des données par défaut..."
     if [ -f "database/symfony_data.sql" ]; then
