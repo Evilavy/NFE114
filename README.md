@@ -92,10 +92,6 @@ L'application utilise une base de données SQLite unifiée (`Site/var/app.db`) p
 - **API JavaEE** : Gestion des utilisateurs et authentification
 - **API .NET** : Système de points
 
-## 📚 Documentation
-
-Pour plus de détails sur la configuration Symfony, consultez `Site/README_SETUP.md`.
-
 ## 🚗 Exemple d'utilisation
 
 ### Créer un trajet
