@@ -31,7 +31,7 @@ class MesReservationsController extends AbstractController
         $error = null;
 
         try {
-            // Récupérer les réservations de l'utilisateur
+            // Récupérer les réservations de l'utilisateur (uniquement les trajets où il est passager, pas conducteur)
             $response = $this->httpClient->request('GET', $this->javaApiUrl . '/trajets/user/' . $userId . '/reservations');
             
             if ($response->getStatusCode() === 200) {

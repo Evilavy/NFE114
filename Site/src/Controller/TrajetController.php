@@ -237,6 +237,11 @@ class TrajetController extends AbstractController
             }
         }
         
+        // Calculer le CO2 évité pour chaque trajet
+        foreach ($trajets as &$trajet) {
+            $trajet['co2Economise'] = $this->calculerCO2TrajetRecherche($trajet, $mesEnfantsIds);
+        }
+        
         return $this->render('trajet/rechercher.html.twig', [
             'error' => $error,
             'trajets' => $trajets,
@@ -452,5 +457,27 @@ class TrajetController extends AbstractController
         }
 
         return $this->redirectToRoute('trajet_mes_trajets');
+    }
+    
+    /**
+     * Calcule le CO2 économisé pour un trajet dans la recherche
+     * Impact individuel : mon trajet évité si je réserve
+     */
+    private function calculerCO2TrajetRecherche(array $trajet, array $mesEnfantsIds): float
+    {
+        // Distance par défaut si pas disponible (estimation moyenne)
+        $distance = $trajet['distanceKm'] ?? 15.0; // 15km par défaut
+        
+        // Facteur d'émission moyen d'une voiture : 120g CO2/km
+        $emissionParKm = 0.12; // kg CO2 par km
+        
+        // Calcul de base : distance * émission
+        $emissionTrajet = $distance * $emissionParKm;
+        
+        // Impact individuel : si je réserve ce trajet, j'évite de faire le trajet moi-même
+        // C'est mon trajet individuel évité
+        $co2Economise = $emissionTrajet;
+        
+        return round($co2Economise, 1);
     }
 } 

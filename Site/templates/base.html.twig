@@ -121,8 +121,18 @@
         <div id="bottomMoreMenu" style="position: fixed; bottom: 5rem; right: 1rem; background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 1rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); transform: scale(0); transform-origin: bottom right; transition: all 0.3s; z-index: 40; min-width: 200px;">
             <div style="padding: 1rem;">
                 <a href="{{ path('trajet_mes_trajets') }}" style="display: flex; align-items: center; gap: 0.75rem; color: white; text-decoration: none; padding: 0.5rem; border-radius: 0.5rem; transition: all 0.3s; hover: background: rgba(255, 255, 255, 0.1);">
-                    <img src="/assets/trajet.svg" alt="Mes trajets" style="width: 1.25rem; height: 1.25rem;" />
-                    <span style="font-size: 0.875rem;">Mes trajets</span>
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                <g>
+                    <defs>
+                        <style>.cls-1{fill:none;stroke:currentColor;stroke-miterlimit:10;stroke-width:1.91px;}.cls-2{fill:currentColor;}</style>
+                    </defs>
+                    <path class="cls-1" d="M9.14,5.08c0,2.39-3.82,6-3.82,6S1.5,7.47,1.5,5.08A3.7,3.7,0,0,1,5.32,1.5,3.7,3.7,0,0,1,9.14,5.08Z"></path>
+                    <circle class="cls-2" cx="5.32" cy="5.32" r="0.95"></circle>
+                    <path class="cls-1" d="M22.5,14.62c0,2.39-3.82,6-3.82,6s-3.82-3.58-3.82-6a3.7,3.7,0,0,1,3.82-3.57A3.7,3.7,0,0,1,22.5,14.62Z"></path>
+                    <circle class="cls-2" cx="18.68" cy="14.86" r="0.95"></circle>
+                    <path class="cls-1" d="M4.36,13h4.3a2.39,2.39,0,0,1,2.39,2.39h0a2.39,2.39,0,0,1-2.39,2.39H3.89A2.39,2.39,0,0,0,1.5,20.11h0A2.39,2.39,0,0,0,3.89,22.5H19.64"></path>
+                </g>
+            </svg>               <span style="font-size: 0.875rem;">Mes trajets</span>
                 </a>
                 
                 <a href="{{ path('mes_reservations') }}" style="display: flex; align-items: center; gap: 0.75rem; color: white; text-decoration: none; padding: 0.5rem; border-radius: 0.5rem; transition: all 0.3s; margin-top: 0.25rem;">

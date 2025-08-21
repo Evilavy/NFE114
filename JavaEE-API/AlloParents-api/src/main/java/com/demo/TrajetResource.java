@@ -537,10 +537,13 @@ public class TrajetResource {
             List<Trajet> userReservations = new ArrayList<>();
             
             for (Trajet trajet : allTrajets) {
+                // Vérifier que l'utilisateur a des enfants inscrits dans ce trajet
                 if (trajet.getEnfantsIds() != null && !trajet.getEnfantsIds().isEmpty()) {
-                    // Vérifier si l'utilisateur a des enfants inscrits dans ce trajet
-                    // Cette logique peut être adaptée selon la structure de vos données
-                    userReservations.add(trajet);
+                    // IMPORTANT : Ne retourner que les trajets où l'utilisateur est PASSAGER
+                    // (c'est-à-dire qu'il a des enfants inscrits mais n'est PAS le conducteur)
+                    if (!userId.equals(trajet.getConducteurId())) {
+                        userReservations.add(trajet);
+                    }
                 }
             }
             

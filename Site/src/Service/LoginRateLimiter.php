@@ -19,7 +19,6 @@ class LoginRateLimiter
         // Use filesystem cache (PSR-6) by default, or injected cache for testing
         $this->cache = $cache ?? new FilesystemAdapter('login_attempts', 0, dirname(__DIR__, 2) . '/var/cache');
     }
-    
     /**
      * Check if an IP is currently locked out
      */
