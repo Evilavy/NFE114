@@ -67,6 +67,13 @@
         <artifactId>jersey-hk2</artifactId>
         <version>3.1.5</version>
     </dependency>
+    
+    <!-- jBCrypt pour le hashage des mots de passe -->
+    <dependency>
+        <groupId>org.mindrot</groupId>
+        <artifactId>jbcrypt</artifactId>
+        <version>0.4</version>
+    </dependency>
  </dependencies>
  <build>
     <finalName>demo-api</finalName>

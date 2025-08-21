@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PointsApi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+918d41954100bc5204f1736777d2f27cc7915a3e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7a6d7ecd54d7d21ebcc374f31484b90c688155ad")]
 [assembly: System.Reflection.AssemblyProductAttribute("PointsApi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PointsApi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

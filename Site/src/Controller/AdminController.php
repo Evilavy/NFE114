@@ -29,13 +29,14 @@ class AdminController extends AbstractController
         $this->httpClient = $httpClient;
     }
     /**
-     * Tableau de bord: liste les entités en attente (enfants, écoles).
-     * Les écoles sont récupérées via l'API Java puis filtrées côté Symfony.
+     * Tableau de bord: liste les entités en attente (enfants, écoles, utilisateurs).
+     * Les écoles et utilisateurs sont récupérées via l'API Java puis filtrées côté Symfony.
      */
     #[Route('/dashboard', name: 'admin_dashboard')]
     public function dashboard(EnfantRepository $enfantRepository): Response
     {
         $enfantsEnAttente = $enfantRepository->findEnAttente();
+        
         // Récupération des écoles via l'API Java et filtrage en attente
         $ecolesEnAttente = [];
         try {
@@ -54,9 +55,27 @@ class AdminController extends AbstractController
             // ignorer et laisser la liste vide
         }
         
+        // Récupération des utilisateurs via l'API Java et filtrage en attente
+        $utilisateursEnAttente = [];
+        try {
+            $response = $this->httpClient->request('GET', $this->javaApiUrl . '/users');
+            if ($response->getStatusCode() === 200) {
+                $tousUtilisateurs = $response->toArray();
+                foreach ($tousUtilisateurs as $utilisateur) {
+                    $approuveParAdmin = $utilisateur['approuveParAdmin'] ?? false;
+                    if (!$approuveParAdmin) {
+                        $utilisateursEnAttente[] = $utilisateur;
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+            // ignorer et laisser la liste vide
+        }
+        
         return $this->render('admin/dashboard.html.twig', [
             'enfantsEnAttente' => $enfantsEnAttente,
             'ecolesEnAttente' => $ecolesEnAttente,
+            'utilisateursEnAttente' => $utilisateursEnAttente,
         ]);
     }
 
@@ -253,5 +272,97 @@ class AdminController extends AbstractController
             $this->addFlash('danger', 'Erreur lors de la suppression: ' . $e->getMessage());
         }
         return $this->redirectToRoute('admin_ecoles_gestion');
+    }
+
+    #[Route('/utilisateurs-en-attente', name: 'admin_utilisateurs_attente')]
+    public function utilisateursEnAttente(): Response
+    {
+        $utilisateurs = [];
+        try {
+            $response = $this->httpClient->request('GET', $this->javaApiUrl . '/users');
+            if ($response->getStatusCode() === 200) {
+                $tousUtilisateurs = $response->toArray();
+                foreach ($tousUtilisateurs as $utilisateur) {
+                    $approuveParAdmin = $utilisateur['approuveParAdmin'] ?? false;
+                    if (!$approuveParAdmin) {
+                        $utilisateurs[] = $utilisateur;
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+            // ignorer et laisser vide
+        }
+
+        return $this->render('admin/pending_users.html.twig', [
+            'pendingUsers' => $utilisateurs,
+        ]);
+    }
+
+    #[Route('/valider-utilisateur/{id}', name: 'admin_valider_utilisateur', methods: ['POST'])]
+    public function validerUtilisateur(int $id): Response
+    {
+        try {
+            // Récupérer l'utilisateur actuel
+            $getResp = $this->httpClient->request('GET', $this->javaApiUrl . '/users/' . $id);
+            if ($getResp->getStatusCode() === 200) {
+                $utilisateur = $getResp->toArray();
+                
+                // Si le mot de passe n'est pas déjà hashé avec BCrypt, le hasher
+                $password = $utilisateur['password'];
+                if (!str_starts_with($password, '$2y$') && !str_starts_with($password, '$2a$')) {
+                    // Hasher le mot de passe avec BCrypt
+                    $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+                    
+                    // Mettre à jour l'utilisateur avec le mot de passe hashé et approuvé
+                    $payload = $utilisateur;
+                    $payload['password'] = $hashedPassword;
+                    $payload['approuveParAdmin'] = true;
+                    
+                    $putResp = $this->httpClient->request('PUT', $this->javaApiUrl . '/users/' . $id, [
+                        'headers' => ['Content-Type' => 'application/json'],
+                        'json' => $payload,
+                    ]);
+                    
+                    if ($putResp->getStatusCode() >= 200 && $putResp->getStatusCode() < 300) {
+                        $this->addFlash('success', 'Utilisateur validé avec succès !');
+                    } else {
+                        $this->addFlash('danger', 'Échec de la validation de l\'utilisateur. Code: ' . $putResp->getStatusCode());
+                    }
+                } else {
+                    // Le mot de passe est déjà hashé, utiliser l'endpoint d'approbation
+                    $putResp = $this->httpClient->request('PUT', $this->javaApiUrl . '/users/' . $id . '/approve');
+                    
+                    if ($putResp->getStatusCode() >= 200 && $putResp->getStatusCode() < 300) {
+                        $this->addFlash('success', 'Utilisateur validé avec succès !');
+                    } else {
+                        $this->addFlash('danger', 'Échec de la validation de l\'utilisateur. Code: ' . $putResp->getStatusCode());
+                    }
+                }
+            } else {
+                $this->addFlash('danger', 'Utilisateur introuvable.');
+            }
+        } catch (\Exception $e) {
+            error_log('Exception lors de la validation: ' . $e->getMessage());
+            $this->addFlash('danger', 'Erreur lors de la validation: ' . $e->getMessage());
+        }
+
+        return $this->redirectToRoute('admin_utilisateurs_attente');
+    }
+
+    #[Route('/rejeter-utilisateur/{id}', name: 'admin_rejeter_utilisateur', methods: ['POST'])]
+    public function rejeterUtilisateur(int $id): Response
+    {
+        try {
+            // Utiliser l'endpoint spécifique pour rejeter l'utilisateur
+            $response = $this->httpClient->request('PUT', $this->javaApiUrl . '/users/' . $id . '/reject');
+            if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 300) {
+                $this->addFlash('success', 'Utilisateur rejeté et supprimé.');
+            } else {
+                $this->addFlash('danger', 'Échec du rejet de l\'utilisateur. Code: ' . $response->getStatusCode());
+            }
+        } catch (\Exception $e) {
+            $this->addFlash('danger', 'Erreur lors du rejet: ' . $e->getMessage());
+        }
+        return $this->redirectToRoute('admin_utilisateurs_attente');
     }
 } 

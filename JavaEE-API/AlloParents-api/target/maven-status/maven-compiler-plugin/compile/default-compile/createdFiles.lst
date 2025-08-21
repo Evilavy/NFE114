@@ -8,4 +8,3 @@ com/demo/service/EntityManagerService.class
 com/demo/model/Message.class
 com/demo/MessageResource.class
 com/demo/DemoApplication.class
-com/demo/UserResource$BCrypt.class

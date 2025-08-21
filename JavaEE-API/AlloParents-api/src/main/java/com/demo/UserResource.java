@@ -11,10 +11,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.util.Base64;
+import org.mindrot.jbcrypt.BCrypt;
 
 /**
  * Ressource JAX-RS Utilisateurs
@@ -30,22 +27,6 @@ public class UserResource {
     private EntityManager em = EntityManagerService.getEntityManagerFactory().createEntityManager();
     
     /**
-     * Hash un mot de passe avec bcrypt
-     * @param plainPassword Le mot de passe en clair
-     * @return Le mot de passe hashé
-     */
-    private String hashPassword(String plainPassword) {
-        try {
-            // Utiliser BCrypt avec un salt généré automatiquement
-            return BCrypt.hashpw(plainPassword, BCrypt.gensalt(12));
-        } catch (Exception e) {
-            System.err.println("Erreur lors du hashage du mot de passe: " + e.getMessage());
-            // En cas d'erreur, retourner le mot de passe original (non sécurisé mais fonctionnel)
-            return plainPassword;
-        }
-    }
-    
-    /**
      * Vérifie si un mot de passe correspond à son hash
      * @param plainPassword Le mot de passe en clair
      * @param hashedPassword Le mot de passe hashé
@@ -57,45 +38,6 @@ public class UserResource {
         } catch (Exception e) {
             System.err.println("Erreur lors de la vérification du mot de passe: " + e.getMessage());
             return false;
-        }
-    }
-    
-    // Classe BCrypt simple pour le hashage
-    private static class BCrypt {
-        private static final String ALPHABET = "./ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        private static final SecureRandom random = new SecureRandom();
-        
-        public static String hashpw(String password, String salt) {
-            // Implémentation simplifiée de BCrypt
-            // En production, utilisez une bibliothèque comme jBCrypt
-            try {
-                MessageDigest md = MessageDigest.getInstance("SHA-256");
-                String saltedPassword = password + salt;
-                byte[] hash = md.digest(saltedPassword.getBytes());
-                return "$2a$12$" + salt + "$" + Base64.getEncoder().encodeToString(hash);
-            } catch (NoSuchAlgorithmException e) {
-                throw new RuntimeException("SHA-256 not available", e);
-            }
-        }
-        
-        public static String gensalt(int logRounds) {
-            StringBuilder salt = new StringBuilder();
-            for (int i = 0; i < 22; i++) {
-                salt.append(ALPHABET.charAt(random.nextInt(ALPHABET.length())));
-            }
-            return salt.toString();
-        }
-        
-        public static boolean checkpw(String plaintext, String hashed) {
-            try {
-                String[] parts = hashed.split("\\$");
-                if (parts.length != 4) return false;
-                String salt = parts[2];
-                String computedHash = hashpw(plaintext, salt);
-                return computedHash.equals(hashed);
-            } catch (Exception e) {
-                return false;
-            }
         }
     }
     
@@ -159,13 +101,8 @@ public class UserResource {
                         .build();
             }
             
-            // Hash le mot de passe avant de le stocker
-            String plainPassword = user.getPassword();
-            String hashedPassword = hashPassword(plainPassword);
-            user.setPassword(hashedPassword);
-            
-            System.out.println("Mot de passe original: " + plainPassword);
-            System.out.println("Mot de passe hashé: " + hashedPassword);
+            // Le mot de passe est déjà hashé par Symfony, l'utiliser tel quel
+            System.out.println("Mot de passe hashé reçu: " + user.getPassword());
             
             user.setApprouveParAdmin(false);
             user.setPoints(50); // Solde initial
@@ -201,9 +138,8 @@ public class UserResource {
             if (user.getPrenom() != null) existingUser.setPrenom(user.getPrenom());
             if (user.getEmail() != null) existingUser.setEmail(user.getEmail());
             if (user.getPassword() != null) {
-                // Hash le mot de passe lors de la mise à jour
-                String hashedPassword = hashPassword(user.getPassword());
-                existingUser.setPassword(hashedPassword);
+                // Le mot de passe est toujours hashé par Symfony
+                existingUser.setPassword(user.getPassword());
             }
             if (user.getRole() != null) existingUser.setRole(user.getRole());
             if (user.getPoints() >= 0) existingUser.setPoints(user.getPoints());
