@@ -1,5 +1,13 @@
 # NFE114 - AlloParents
 
+📱 Important — Application conçue pour mobile
+
+Cette application est optimisée pour un affichage mobile. Si vous l'utilisez sur un ordinateur, activez l'affichage mobile dans votre navigateur :
+1. Ouvrez les outils de développement (clic droit → Inspecter).
+2. Activez la vue mobile (icône « Toggle device toolbar »).
+3. Sélectionnez un appareil (ex. iPhone 14, Pixel 7).
+
+
 Application de covoiturage scolaire pour les parents d'élèves.
 
 ## 🚀 Installation rapide
