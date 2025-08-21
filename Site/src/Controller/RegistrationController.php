@@ -10,6 +10,11 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
+/**
+ * Contrôleur Inscription
+ *
+ * Valide le formulaire et crée l'utilisateur via l'API Java.
+ */
 class RegistrationController extends AbstractController
 {
     private string $javaApiUrl = 'http://localhost:8080/demo-api/api';
@@ -19,6 +24,9 @@ class RegistrationController extends AbstractController
     ) {
     }
 
+    /**
+     * Inscription d'un nouvel utilisateur et redirection vers la connexion.
+     */
     #[Route('/register', name: 'app_register')]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher): Response
     {

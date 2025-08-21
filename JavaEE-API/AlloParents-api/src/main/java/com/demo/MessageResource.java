@@ -10,6 +10,12 @@ import jakarta.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Ressource JAX-RS Messages
+ *
+ * Gère la messagerie liée aux trajets: liste par utilisateur, conversation
+ * entre deux utilisateurs pour un trajet, création de message et marquage "lu".
+ */
 @Path("/messages")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -17,6 +23,9 @@ public class MessageResource {
 
     private EntityManager em = EntityManagerService.getEntityManagerFactory().createEntityManager();
 
+    /**
+     * Liste tous les messages où l'utilisateur est expéditeur ou destinataire.
+     */
     @GET
     @Path("/user/{userId}")
     public List<Message> getMessagesForUser(@PathParam("userId") Long userId) {
@@ -33,6 +42,10 @@ public class MessageResource {
         }
     }
 
+    /**
+     * Retourne la conversation (triée ASC par date) pour un trajet
+     * entre l'utilisateur courant et un destinataire.
+     */
     @GET
     @Path("/conversation/{trajetId}/{userId}/{destinataireId}")
     public List<Message> getConversation(
@@ -55,6 +68,9 @@ public class MessageResource {
         }
     }
 
+    /**
+     * Crée un message après validations (trajetId, participants, contenu, date).
+     */
     @POST
     public Response createMessage(Message message) {
         // Validations
@@ -91,6 +107,9 @@ public class MessageResource {
         }
     }
 
+    /**
+     * Marque un message comme lu.
+     */
     @PUT
     @Path("/{id}/lu")
     public Response markAsRead(@PathParam("id") Long id) {

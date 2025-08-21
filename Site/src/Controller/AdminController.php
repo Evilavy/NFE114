@@ -14,6 +14,11 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 #[Route('/admin')]
 #[IsGranted('ROLE_ADMIN')]
+/**
+ * Contrôleur Administration
+ *
+ * Centralise la modération: validation des enfants et écoles, et vue d'ensemble.
+ */
 class AdminController extends AbstractController
 {
     private HttpClientInterface $httpClient;
@@ -23,6 +28,10 @@ class AdminController extends AbstractController
     {
         $this->httpClient = $httpClient;
     }
+    /**
+     * Tableau de bord: liste les entités en attente (enfants, écoles).
+     * Les écoles sont récupérées via l'API Java puis filtrées côté Symfony.
+     */
     #[Route('/dashboard', name: 'admin_dashboard')]
     public function dashboard(EnfantRepository $enfantRepository): Response
     {

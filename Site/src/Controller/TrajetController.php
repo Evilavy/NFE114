@@ -12,6 +12,12 @@ use App\Repository\EnfantRepository;
 
 #[Route('/trajet')]
 #[IsGranted('ROLE_USER')]
+/**
+ * Contrôleur Trajets
+ *
+ * Gère la création, la recherche, l'affichage et la suppression des trajets.
+ * Les opérations métier s'appuient sur l'API Java, avec validations côté Symfony.
+ */
 class TrajetController extends AbstractController
 {
     private $httpClient;
@@ -22,6 +28,10 @@ class TrajetController extends AbstractController
         $this->httpClient = $httpClient;
     }
 
+    /**
+     * Crée un nouveau trajet après validations côté UI.
+     * Récupère écoles/voitures et envoie la requête de création à l'API Java.
+     */
     #[Route('/ajouter', name: 'trajet_ajouter', methods: ['GET', 'POST'])]
     public function ajouter(Request $request, EnfantRepository $enfantRepository): Response
     {
@@ -142,6 +152,10 @@ class TrajetController extends AbstractController
         ]);
     }
 
+    /**
+     * Recherche des trajets disponibles filtrés par école et date.
+     * Exclut les trajets de l'utilisateur et ceux déjà réservés par lui.
+     */
     #[Route('/rechercher', name: 'trajet_rechercher', methods: ['GET', 'POST'])]
     public function rechercher(Request $request, EnfantRepository $enfantRepository): Response
     {
@@ -252,6 +266,9 @@ class TrajetController extends AbstractController
         ]);
     }
 
+    /**
+     * Liste les trajets dont l'utilisateur est le conducteur, avec détails utiles.
+     */
     #[Route('/mes-trajets', name: 'trajet_mes_trajets', methods: ['GET'])]
     public function mesTrajets(EnfantRepository $enfantRepository): Response
     {
@@ -348,6 +365,10 @@ class TrajetController extends AbstractController
         ]);
     }
 
+    /**
+     * Supprime un trajet appartenant à l'utilisateur.
+     * Gère les remboursements/déductions de points si nécessaire.
+     */
     #[Route('/{id}/supprimer', name: 'trajet_supprimer', methods: ['POST'])]
     public function supprimerTrajet(Request $request, int $id, EnfantRepository $enfantRepository): Response
     {

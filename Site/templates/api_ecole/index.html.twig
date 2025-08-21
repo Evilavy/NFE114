@@ -130,7 +130,7 @@ document.getElementById('createEcoleForm').addEventListener('submit', function(e
         codePostal: document.getElementById('codePostal').value
     };
     
-    fetch('/api/ecoles', {
+    fetch('http://localhost:8080/demo-api/api/ecoles', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -154,7 +154,7 @@ document.getElementById('createEcoleForm').addEventListener('submit', function(e
 
 // Charger la liste des écoles
 function loadEcoles() {
-    fetch('/api/ecoles')
+    fetch('http://localhost:8080/demo-api/api/ecoles')
     .then(response => response.json())
     .then(data => {
         const container = document.getElementById('ecolesList');
@@ -222,7 +222,7 @@ function updateEcole() {
         codePostal: document.getElementById('editCodePostal').value
     };
     
-    fetch(`/api/ecoles/${id}`, {
+    fetch(`http://localhost:8080/demo-api/api/ecoles/${id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -247,7 +247,7 @@ function updateEcole() {
 // Supprimer une école
 function deleteEcole(id) {
     if (confirm('Êtes-vous sûr de vouloir supprimer cette école?')) {
-        fetch(`/api/ecoles/${id}`, {
+        fetch(`http://localhost:8080/demo-api/api/ecoles/${id}`, {
             method: 'DELETE'
         })
         .then(response => {

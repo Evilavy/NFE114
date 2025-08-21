@@ -12,8 +12,16 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/voiture')]
+/**
+ * Contrôleur Voiture
+ *
+ * Permet la gestion des voitures de l'utilisateur et expose un endpoint API.
+ */
 class VoitureController extends AbstractController
 {
+    /**
+     * Liste les voitures de l'utilisateur courant.
+     */
     #[Route('/', name: 'voiture_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function index(VoitureRepository $voitureRepository): Response
@@ -26,6 +34,9 @@ class VoitureController extends AbstractController
         ]);
     }
 
+    /**
+     * Modifie une voiture si elle appartient à l'utilisateur et sans trajets futurs actifs.
+     */
     #[Route('/{id}/modifier', name: 'voiture_modifier', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function modifier(Request $request, Voiture $voiture, EntityManagerInterface $entityManager): Response
@@ -93,6 +104,9 @@ class VoitureController extends AbstractController
         ]);
     }
 
+    /**
+     * Supprime une voiture appartenant à l'utilisateur.
+     */
     #[Route('/{id}/supprimer', name: 'voiture_supprimer', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
     public function supprimer(Voiture $voiture, EntityManagerInterface $entityManager): Response
@@ -109,6 +123,9 @@ class VoitureController extends AbstractController
         return $this->redirectToRoute('voiture_index');
     }
 
+    /**
+     * Endpoint API: liste des voitures d'un utilisateur (utilisée côté TrajetController).
+     */
     #[Route('/api/voitures/user/{userId}', name: 'api_voitures_user', methods: ['GET'])]
     public function getVoituresByUser(int $userId, VoitureRepository $voitureRepository): Response
     {

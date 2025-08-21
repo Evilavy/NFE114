@@ -12,6 +12,11 @@ use App\Repository\EnfantRepository;
 
 #[Route('/reservation')]
 #[IsGranted('ROLE_USER')]
+/**
+ * Contrôleur Réservations
+ *
+ * Effectue la réservation côté API Java puis orchestre le débit/crédit de points.
+ */
 class ReservationController extends AbstractController
 {
     private $javaApiUrl = 'http://localhost:8080/demo-api/api';
@@ -22,6 +27,10 @@ class ReservationController extends AbstractController
         $this->httpClient = $httpClient;
     }
 
+    /**
+     * Réserve une place pour un enfant sur un trajet donné.
+     * Valide l'entrée, vérifie les points et appelle l'API Java, puis l'API Points.
+     */
     #[Route('/trajet/{id}', name: 'reservation_trajet', methods: ['POST'])]
     public function reserverTrajet(Request $request, int $id, EnfantRepository $enfantRepository): Response
     {

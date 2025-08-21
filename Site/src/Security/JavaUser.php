@@ -5,6 +5,12 @@ namespace App\Security;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+/**
+ * Entité utilisateur Symfony qui encapsule les données de l'API Java
+ * 
+ * Adapte les données Java au format attendu par Symfony Security.
+ * Gère les rôles et la validation admin.
+ */
 class JavaUser implements UserInterface, PasswordAuthenticatedUserInterface
 {
     private array $userData;
@@ -21,10 +27,10 @@ class JavaUser implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getRoles(): array
     {
-        // Définir les rôles basés sur les données Java
+        // Mapping des rôles : ROLE_USER par défaut + ROLE_ADMIN si admin
         $roles = ['ROLE_USER'];
         
-        // Si c'est un admin
+        // Attribution admin basée sur l'email (hardcodé pour simplifier)
         if ($this->userData['email'] === 'admin@alloparents.com') {
             $roles[] = 'ROLE_ADMIN';
         }

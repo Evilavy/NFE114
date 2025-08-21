@@ -12,6 +12,12 @@ use App\Repository\EnfantRepository;
 
 #[Route('/chat')]
 #[IsGranted('ROLE_USER')]
+/**
+ * Contrôleur Chat
+ *
+ * Gère les conversations liées à un trajet entre conducteur et parent.
+ * Met en place des garde-fous: accès uniquement si un lien actif (enfant inscrit) existe.
+ */
 class ChatController extends AbstractController
 {
     private $httpClient;
@@ -22,6 +28,10 @@ class ChatController extends AbstractController
         $this->httpClient = $httpClient;
     }
 
+    /**
+     * Affiche et poste des messages pour une conversation donnée.
+     * Vérifie que le lien au trajet est encore valide avant d'autoriser l'échange.
+     */
     #[Route('/conversation/{trajetId}/{destinataireId}', name: 'chat_conversation', methods: ['GET', 'POST'])]
     public function conversation(Request $request, int $trajetId, int $destinataireId, EnfantRepository $enfantRepository): Response
     {
@@ -206,6 +216,9 @@ class ChatController extends AbstractController
         ]);
     }
 
+    /**
+     * Liste les conversations actives et compte les messages non lus.
+     */
     #[Route('/messages', name: 'chat_messages', methods: ['GET'])]
     public function messages(EnfantRepository $enfantRepository): Response
     {
@@ -427,6 +440,9 @@ class ChatController extends AbstractController
         ]);
     }
 
+    /**
+     * Marque tous les messages d'une conversation comme lus pour l'utilisateur courant.
+     */
     #[Route('/chat/mark-conversation-read/{trajetId}/{autreUserId}', name: 'chat_mark_conversation_read', methods: ['POST'])]
     public function markConversationRead(int $trajetId, int $autreUserId): Response
     {

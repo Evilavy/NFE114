@@ -12,6 +12,12 @@ use App\Repository\EnfantRepository;
 
 #[Route('/mes-reservations')]
 #[IsGranted('ROLE_USER')]
+/**
+ * Contrôleur Mes Réservations
+ *
+ * Affiche les réservations de l'utilisateur et permet messagerie/annulation,
+ * avec synchronisation des points si nécessaire.
+ */
 class MesReservationsController extends AbstractController
 {
     private $javaApiUrl = 'http://localhost:8080/demo-api/api';
@@ -21,6 +27,9 @@ class MesReservationsController extends AbstractController
         $this->httpClient = $httpClient;
     }
 
+    /**
+     * Liste les réservations actives et passées avec informations utiles.
+     */
     #[Route('/', name: 'mes_reservations', methods: ['GET'])]
     public function index(EnfantRepository $enfantRepository): Response
     {
@@ -119,6 +128,9 @@ class MesReservationsController extends AbstractController
         ]);
     }
 
+    /**
+     * Envoie un message au conducteur pour un trajet réservé (non passé).
+     */
     #[Route('/{trajetId}/message', name: 'mes_reservations_envoyer_message', methods: ['POST'])]
     public function envoyerMessage(Request $request, int $trajetId): Response
     {
@@ -179,6 +191,9 @@ class MesReservationsController extends AbstractController
         return $this->redirectToRoute('mes_reservations');
     }
 
+    /**
+     * Annule la réservation d'un enfant et gère le remboursement/bonus.
+     */
     #[Route('/{trajetId}/annuler', name: 'mes_reservations_annuler', methods: ['POST'])]
     public function annulerReservation(Request $request, int $trajetId): Response
     {

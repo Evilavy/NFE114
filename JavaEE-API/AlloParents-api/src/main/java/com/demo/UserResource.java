@@ -16,6 +16,12 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Base64;
 
+/**
+ * Ressource JAX-RS Utilisateurs
+ *
+ * CRUD utilisateurs, approbation admin et gestion des points.
+ * Contient une implémentation simplifiée de BCrypt (à remplacer en prod).
+ */
 @Path("/users")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -93,6 +99,9 @@ public class UserResource {
         }
     }
     
+    /**
+     * Liste tous les utilisateurs.
+     */
     @GET
     public List<User> getAllUsers() {
         try {
@@ -104,6 +113,9 @@ public class UserResource {
         }
     }
     
+    /**
+     * Récupère un utilisateur par identifiant.
+     */
     @GET
     @Path("/{id}")
     public Response getUserById(@PathParam("id") Long id) {
@@ -120,6 +132,9 @@ public class UserResource {
         }
     }
     
+    /**
+     * Crée un utilisateur après vérification d'unicité email et hash du mot de passe.
+     */
     @POST
     public Response createUser(User user) {
         if (user.getNom() == null || user.getNom().isEmpty() ||
@@ -170,6 +185,9 @@ public class UserResource {
         }
     }
     
+    /**
+     * Met à jour un utilisateur (hash du mot de passe si fourni).
+     */
     @PUT
     @Path("/{id}")
     public Response updateUser(@PathParam("id") Long id, User user) {
@@ -204,6 +222,9 @@ public class UserResource {
         }
     }
     
+    /**
+     * Supprime un utilisateur.
+     */
     @DELETE
     @Path("/{id}")
     public Response deleteUser(@PathParam("id") Long id) {
@@ -226,6 +247,9 @@ public class UserResource {
         }
     }
     
+    /**
+     * Liste des utilisateurs en attente d'approbation admin.
+     */
     @GET
     @Path("/pending")
     public List<User> getPendingUsers() {
@@ -238,6 +262,9 @@ public class UserResource {
         }
     }
     
+    /**
+     * Approuve un utilisateur (validation admin).
+     */
     @PUT
     @Path("/{id}/approve")
     public Response approveUser(@PathParam("id") Long id) {
@@ -261,6 +288,9 @@ public class UserResource {
         }
     }
     
+    /**
+     * Rejette un utilisateur et le supprime.
+     */
     @PUT
     @Path("/{id}/reject")
     public Response rejectUser(@PathParam("id") Long id) {
@@ -283,6 +313,9 @@ public class UserResource {
         }
     }
     
+    /**
+     * Retourne le solde de points d'un utilisateur.
+     */
     @GET
     @Path("/{id}/points")
     public Response getUserPoints(@PathParam("id") Long id) {
@@ -299,6 +332,9 @@ public class UserResource {
         }
     }
     
+    /**
+     * Ajoute des points à un utilisateur.
+     */
     @PUT
     @Path("/{id}/points/add")
     public Response addPoints(@PathParam("id") Long id, int points) {
@@ -322,6 +358,9 @@ public class UserResource {
         }
     }
     
+    /**
+     * Retire des points (si solde suffisant).
+     */
     @PUT
     @Path("/{id}/points/remove")
     public Response removePoints(@PathParam("id") Long id, int points) {

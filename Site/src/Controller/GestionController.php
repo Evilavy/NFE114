@@ -16,6 +16,12 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 #[Route('/gestion')]
+/**
+ * Espace gestion (enfants, voitures, propositions d'école)
+ *
+ * Orchestration UI côté Symfony, avec appels à l'API Java pour les écoles
+ * et contrôles d'intégrité locaux avant opérations sensibles.
+ */
 class GestionController extends AbstractController
 {
     private HttpClientInterface $httpClient;
@@ -27,6 +33,10 @@ class GestionController extends AbstractController
         $this->javaApiUrl = $javaApiUrl;
     }
 
+    /**
+     * Liste, ajoute et supprime les enfants de l'utilisateur.
+     * Vérifie l'appartenance et les contraintes (trajets actifs) avant suppression.
+     */
     #[Route('/mes-enfants', name: 'gestion_enfants', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function mesEnfants(
@@ -143,6 +153,10 @@ class GestionController extends AbstractController
         ]);
     }
 
+    /**
+     * Liste et gère les voitures de l'utilisateur.
+     * Empêche la modification risquée si la voiture est liée à des trajets actifs.
+     */
     #[Route('/mes-voitures', name: 'gestion_voitures', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function mesVoitures(Request $request, VoitureRepository $voitureRepository, EntityManagerInterface $entityManager): Response
@@ -219,6 +233,9 @@ class GestionController extends AbstractController
         ]);
     }
 
+    /**
+     * Permet à un utilisateur de proposer une école (soumise à validation admin).
+     */
     #[Route('/proposer-ecole', name: 'gestion_proposer_ecole', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function proposerEcole(Request $request): Response
@@ -274,6 +291,9 @@ class GestionController extends AbstractController
         ]);
     }
 
+    /**
+     * Modifie un enfant appartenant à l'utilisateur.
+     */
     #[Route('/modifier-enfant/{id}', name: 'gestion_modifier_enfant', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function modifierEnfant(Request $request, int $id, EnfantRepository $enfantRepository, EntityManagerInterface $entityManager): Response
@@ -347,6 +367,9 @@ class GestionController extends AbstractController
         ]);
     }
 
+    /**
+     * Modifie une voiture de l'utilisateur, sans changer le nombre de places si utilisée.
+     */
     #[Route('/modifier-voiture/{id}', name: 'gestion_modifier_voiture', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function modifierVoiture(Request $request, int $id, VoitureRepository $voitureRepository, EntityManagerInterface $entityManager): Response

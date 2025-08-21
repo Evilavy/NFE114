@@ -32,6 +32,9 @@ class AdminEcoleController extends AbstractController
                 'adresse' => $request->request->get('adresse'),
                 'ville' => $request->request->get('ville'),
                 'codePostal' => $request->request->get('codePostal'),
+                'valide' => true, // École automatiquement validée par l'admin
+                'statut' => 'validee', // Statut validé
+                'contributeurId' => $this->getUser()->getId(), // L'admin devient le contributeur
             ];
             try {
                 $response = $this->httpClient->request('POST', $this->javaApiUrl, [

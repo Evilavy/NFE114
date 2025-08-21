@@ -12,6 +12,12 @@ import jakarta.json.bind.JsonbBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Ressource JAX-RS Écoles
+ *
+ * Fournit les opérations CRUD et des vues filtrées (validées, en attente).
+ * Utilise JPA via un EntityManager géré manuellement.
+ */
 @Path("/ecoles")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -19,6 +25,9 @@ public class EcoleResource {
     
     private EntityManager em = EntityManagerService.getEntityManagerFactory().createEntityManager();
 
+    /**
+     * Liste toutes les écoles.
+     */
     @GET
     public Response getAllEcoles() {
         try {
@@ -31,6 +40,9 @@ public class EcoleResource {
         }
     }
 
+    /**
+     * Liste les écoles validées uniquement.
+     */
     @GET
     @Path("/validees")
     public Response getEcolesValidees() {
@@ -44,6 +56,9 @@ public class EcoleResource {
         }
     }
 
+    /**
+     * Liste les écoles en attente de validation.
+     */
     @GET
     @Path("/en-attente")
     public Response getEcolesEnAttente() {
@@ -57,6 +72,9 @@ public class EcoleResource {
         }
     }
 
+    /**
+     * Récupère une école par identifiant.
+     */
     @GET
     @Path("/{id}")
     public Response getEcoleById(@PathParam("id") Long id) {
@@ -74,6 +92,9 @@ public class EcoleResource {
         }
     }
 
+    /**
+     * Crée une école après validations des champs requis.
+     */
     @POST
     public Response createEcole(Ecole ecole) {
         // Validation des données
@@ -124,6 +145,9 @@ public class EcoleResource {
         }
     }
 
+    /**
+     * Met à jour une école existante (champs obligatoires requis).
+     */
     @PUT
     @Path("/{id}")
     public Response updateEcole(@PathParam("id") Long id, Ecole ecoleUpdate) {
@@ -198,6 +222,9 @@ public class EcoleResource {
         }
     }
 
+    /**
+     * Supprime une école par identifiant.
+     */
     @DELETE
     @Path("/{id}")
     public Response deleteEcole(@PathParam("id") Long id) {

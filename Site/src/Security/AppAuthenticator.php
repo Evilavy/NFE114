@@ -17,6 +17,12 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\CustomCre
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
+/**
+ * Authentificateur principal - Gère le processus de connexion
+ * 
+ * Flow : Rate limiting → Récupération utilisateur → Vérification mot de passe → Redirection
+ * Intègre la limitation de tentatives et la validation admin obligatoire.
+ */
 class AppAuthenticator extends AbstractLoginFormAuthenticator
 {
     use TargetPathTrait;
@@ -30,11 +36,19 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
     ) {
     }
 
+    /**
+     * ÉTAPE 1 : Authentification - Vérification rate limiting puis récupération utilisateur
+     * 
+     * 1. Blocage IP si trop de tentatives échouées
+     * 2. Récupération utilisateur depuis l'API Java
+     * 3. Vérification validation admin obligatoire
+     * 4. Vérification mot de passe (hashé ou en clair)
+     */
     public function authenticate(Request $request): Passport
     {
         $clientIp = $this->rateLimiter->getClientIp($request);
         
-        // Check if IP is locked before attempting authentication
+        // ÉTAPE 1.1 : Vérification rate limiting avant toute tentative
         if ($this->rateLimiter->isLocked($clientIp)) {
             $remainingTime = $this->rateLimiter->formatRemainingTime(
                 $this->rateLimiter->getRemainingLockoutTime($clientIp)
@@ -50,14 +64,17 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
         // pré-remplir le formulaire de login si l'utilisateur se trompe de mot de passe
         $request->getSession()->set('_security.last_username', $email);
 
+        // ÉTAPE 1.2 : Création du passport avec badges de sécurité
         return new Passport(
             new UserBadge($email, function($userIdentifier) {
+                // Récupération utilisateur depuis l'API Java
                 $user = $this->userProvider->loadUserByIdentifier($userIdentifier);
                 
                 if (!$user instanceof JavaUser) {
                     throw new CustomUserMessageAuthenticationException('Utilisateur non trouvé.');
                 }
                 
+                // Vérification obligatoire : compte approuvé par admin
                 if (!$user->isApprovedByAdmin()) {
                     throw new CustomUserMessageAuthenticationException('Votre compte n\'a pas encore été approuvé par un administrateur.');
                 }
@@ -68,12 +85,12 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
                 $plainPassword = $credentials;
                 $hashedPassword = $user->getPassword();
                 
-                // Vérifier si le mot de passe est déjà hashé (commence par $2a$ ou $2y$)
+                // ÉTAPE 1.3 : Vérification mot de passe (compatible hashé et en clair)
                 if (strpos($hashedPassword, '$2a$') === 0 || strpos($hashedPassword, '$2y$') === 0) {
-                    // Mot de passe hashé, utiliser password_verify
+                    // Mot de passe hashé BCrypt → password_verify()
                     return password_verify($plainPassword, $hashedPassword);
                 } else {
-                    // Mot de passe en clair (ancien format), comparaison directe
+                    // Mot de passe en clair (ancien format) → comparaison directe
                     return $plainPassword === $hashedPassword;
                 }
             }, $request->request->get('_password', '')),
@@ -84,13 +101,16 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
         );
     }
 
+    /**
+     * ÉTAPE 2 : Succès d'authentification - Reset rate limiting et redirection
+     */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        // Reset failed attempts on successful login
+        // Reset du compteur de tentatives échouées
         $clientIp = $this->rateLimiter->getClientIp($request);
         $this->rateLimiter->resetAttempts($clientIp);
         
-        // Vérifie si l'utilisateur essayait d'accéder à une page avant de se connecter
+        // Redirection intelligente : page demandée ou accueil
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }

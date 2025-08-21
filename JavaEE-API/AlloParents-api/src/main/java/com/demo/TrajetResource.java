@@ -13,6 +13,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Ressource JAX-RS Trajets
+ *
+ * Gère la création, réservation (simple/multiple), annulation et requêtes de liste.
+ */
 @Path("/trajets")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -20,6 +25,9 @@ public class TrajetResource {
     
     private EntityManager em = EntityManagerService.getEntityManagerFactory().createEntityManager();
     
+    /**
+     * Liste tous les trajets.
+     */
     @GET
     public List<Trajet> getAllTrajets() {
         try {
@@ -31,6 +39,9 @@ public class TrajetResource {
         }
     }
     
+    /**
+     * Détail d'un trajet par identifiant.
+     */
     @GET
     @Path("/{id}")
     public Response getTrajet(@PathParam("id") Long id) {
@@ -49,6 +60,9 @@ public class TrajetResource {
         }
     }
     
+    /**
+     * Crée un trajet après validations (cohérence dates/heures, champs requis).
+     */
     @POST
     public Response createTrajet(Trajet trajet) {
         if (trajet.getPointDepart() == null || trajet.getPointDepart().trim().isEmpty()) {
@@ -159,6 +173,9 @@ public class TrajetResource {
         }
     }
     
+    /**
+     * Réserve une place pour un enfant.
+     */
     @POST
     @Path("/{id}/reserver")
     @Consumes(MediaType.WILDCARD)
@@ -231,6 +248,9 @@ public class TrajetResource {
         }
     }
     
+    /**
+     * Réservation multiple pour plusieurs enfants.
+     */
     @POST
     @Path("/{id}/reserver-multiple")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -327,6 +347,9 @@ public class TrajetResource {
         }
     }
     
+    /**
+     * Annule la réservation d'un enfant pour un trajet.
+     */
     @POST
     @Path("/{id}/annuler-reservation")
     @Consumes(MediaType.WILDCARD)
@@ -375,6 +398,9 @@ public class TrajetResource {
         }
     }
     
+    /**
+     * Met à jour un trajet (mise à jour partielle des champs fournis).
+     */
     @PUT
     @Path("/{id}")
     public Response updateTrajet(@PathParam("id") Long id, Trajet trajetUpdate) {
@@ -438,6 +464,9 @@ public class TrajetResource {
         }
     }
     
+    /**
+     * Supprime un trajet par identifiant.
+     */
     @DELETE
     @Path("/{id}")
     public Response deleteTrajet(@PathParam("id") Long id) {
@@ -463,6 +492,9 @@ public class TrajetResource {
         }
     }
     
+    /**
+     * Liste les trajets pour un conducteur donné.
+     */
     @GET
     @Path("/conducteur/{conducteurId}")
     public List<Trajet> getTrajetsByConducteur(@PathParam("conducteurId") Long conducteurId) {
@@ -477,6 +509,9 @@ public class TrajetResource {
         }
     }
     
+    /**
+     * Liste les trajets filtrés par statut.
+     */
     @GET
     @Path("/statut/{statut}")
     public List<Trajet> getTrajetsByStatut(@PathParam("statut") String statut) {
@@ -491,6 +526,9 @@ public class TrajetResource {
         }
     }
     
+    /**
+     * Liste les trajets contenant un enfant donné.
+     */
     @GET
     @Path("/enfant/{enfantId}")
     public List<Trajet> getTrajetsByEnfant(@PathParam("enfantId") Long enfantId) {
@@ -513,6 +551,9 @@ public class TrajetResource {
         }
     }
     
+    /**
+     * Liste les trajets associés à une voiture donnée.
+     */
     @GET
     @Path("/voiture/{voitureId}")
     public List<Trajet> getTrajetsByVoiture(@PathParam("voitureId") Long voitureId) {
@@ -527,6 +568,9 @@ public class TrajetResource {
         }
     }
     
+    /**
+     * Réservations d'un utilisateur (trajets où il est passager).
+     */
     @GET
     @Path("/user/{userId}/reservations")
     public List<Trajet> getReservationsByUser(@PathParam("userId") Long userId) {

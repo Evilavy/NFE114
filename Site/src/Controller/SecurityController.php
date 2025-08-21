@@ -9,8 +9,16 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
+/**
+ * Contrôleur Sécurité
+ *
+ * Gère l'authentification avec limitation de tentatives (rate limiting).
+ */
 class SecurityController extends AbstractController
 {
+    /**
+     * Affiche la page de connexion et applique la logique de rate limiting.
+     */
     #[Route(path: '/login', name: 'app_login')]
     public function login(Request $request, AuthenticationUtils $authenticationUtils, LoginRateLimiter $rateLimiter): Response
     {
@@ -54,6 +62,9 @@ class SecurityController extends AbstractController
         ]);
     }
 
+    /**
+     * Déconnexion — gérée par le firewall Symfony.
+     */
     #[Route(path: '/logout', name: 'app_logout')]
     public function logout(): void
     {

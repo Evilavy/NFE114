@@ -10,6 +10,11 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/user')]
 #[IsGranted('ROLE_USER')]
+/**
+ * Contrôleur Utilisateur
+ *
+ * Expose des endpoints pour le profil et les points de l'utilisateur courant.
+ */
 class UserController extends AbstractController
 {
     private $javaApiUrl = 'http://localhost:8080/demo-api/api';
@@ -19,6 +24,9 @@ class UserController extends AbstractController
         $this->httpClient = $httpClient;
     }
 
+    /**
+     * Retourne le solde de points de l'utilisateur courant.
+     */
     #[Route('/points', name: 'user_points', methods: ['GET'])]
     public function getUserPoints(): Response
     {
@@ -37,6 +45,9 @@ class UserController extends AbstractController
         return $this->json(['error' => 'Impossible de récupérer les points'], 500);
     }
 
+    /**
+     * Affiche le profil utilisateur récupéré depuis l'API Java.
+     */
     #[Route('/profile', name: 'user_profile', methods: ['GET'])]
     public function profile(): Response
     {
