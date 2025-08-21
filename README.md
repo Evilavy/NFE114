@@ -106,8 +106,6 @@ Pour plus de détails sur la configuration Symfony, consultez `Site/README_SETUP
    - **Arrivée** : Collège Colbert, Cholet
    - **Date** : Date souhaitée
    - **Heure de départ** : 7h30
-   - **Nombre de places** : 4
-   - **Coût en points** : 5 points par enfant
 
 4. Ajoutez vos enfants qui participent au trajet
 5. Publiez le trajet
@@ -117,5 +115,5 @@ Pour plus de détails sur la configuration Symfony, consultez `Site/README_SETUP
 2. Recherchez des trajets disponibles
 3. Sélectionnez un trajet qui correspond à vos besoins
 4. Choisissez l'enfant à inscrire
-5. Confirmez la réservation (coût : 5 points)
+5. Confirmez la réservation
 6. Communiquez avec le conducteur via la messagerie intégrée
