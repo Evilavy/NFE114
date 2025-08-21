@@ -1,5 +1,33 @@
 -- Données par défaut pour Symfony (enfants, voitures, etc.)
 
+-- Création des tables manquantes si elles n'existent pas
+CREATE TABLE IF NOT EXISTS ecole (
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    nom VARCHAR(255) NOT NULL,
+    adresse VARCHAR(255) NOT NULL,
+    code_postal VARCHAR(255) NOT NULL,
+    ville VARCHAR(255) NOT NULL,
+    valide BOOLEAN DEFAULT 0 NOT NULL,
+    date_creation DATETIME DEFAULT NULL,
+    date_validation DATETIME DEFAULT NULL,
+    commentaire_admin VARCHAR(255) DEFAULT NULL,
+    contributeur_id BIGINT DEFAULT NULL,
+    email VARCHAR(255) DEFAULT NULL,
+    telephone VARCHAR(255) DEFAULT NULL
+);
+
+CREATE TABLE IF NOT EXISTS user (
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    nom VARCHAR(255) NOT NULL,
+    prenom VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role VARCHAR(255) NOT NULL,
+    points INTEGER NOT NULL,
+    is_approved_by_admin BOOLEAN NOT NULL,
+    created_at VARCHAR(255) DEFAULT NULL
+);
+
 -- Insertion de l'école par défaut (si pas déjà présente)
 INSERT OR IGNORE INTO ecole (nom, adresse, code_postal, ville, valide) 
 VALUES (
